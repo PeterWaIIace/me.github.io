@@ -24,8 +24,8 @@ PnP adhoc messaging with file sending using webRTC! Allows for transfering files
 Play games with your faces expressions, using Emteq facial sensing glasses! Affective gaming PoC built by me internally in Emteq. Games are experiments provided by [Gymnasium](https://github.com/Farama-Foundation/Gymnasium) project.  
 
 <p align="center">
-  <img src=https://user-images.githubusercontent.com/40773550/228829034-e0a69858-92bb-4754-8993-1599176c7dfd.gif width="340" height="200">
-  <img src=https://user-images.githubusercontent.com/40773550/228829964-80705b7e-74c8-4e3f-bffd-81c974013597.gif width="340" height="200">
+  <img src=https://user-images.githubusercontent.com/40773550/228829034-e0a69858-92bb-4754-8993-1599176c7dfd.gif width="340" height="200"/>
+  <img src=https://user-images.githubusercontent.com/40773550/228829964-80705b7e-74c8-4e3f-bffd-81c974013597.gif width="340" height="200"/>
 </p>
 
 (clearly I am not the best player ...)
@@ -37,7 +37,7 @@ Play games with your faces expressions, using Emteq facial sensing glasses! Affe
 Here is my take on implementation of 2D boids algorithm, case showing emergent behaviours based in systems based on simple building blocks.
 
 <p align="center">
-  <img src=https://user-images.githubusercontent.com/40773550/221363441-8afa31f7-3d15-4258-a417-1056fa4e333d.gif>
+  <img src=https://user-images.githubusercontent.com/40773550/221363441-8afa31f7-3d15-4258-a417-1056fa4e333d.gif/>
 </p>
 
 ### [Genetic Painter](https://github.com/PeterWaIIace/GeneticPainter)
@@ -45,8 +45,8 @@ Here is my take on implementation of 2D boids algorithm, case showing emergent b
 Evolutionary algorithms can make art (or at aleast reproduce it).
 
 <p align="center">
-  <img src=https://user-images.githubusercontent.com/40773550/228100220-3f8be211-896a-440f-9829-57247c1e3208.gif width="240" height="240">
-  <img src=https://user-images.githubusercontent.com/40773550/228984764-37cecee3-1a10-46f2-9044-478daee041b1.gif width="240" height="240">
+  <img src=https://user-images.githubusercontent.com/40773550/228100220-3f8be211-896a-440f-9829-57247c1e3208.gif width="240" height="240"/>
+  <img src=https://user-images.githubusercontent.com/40773550/228984764-37cecee3-1a10-46f2-9044-478daee041b1.gif width="240" height="240"/>
 </p>
 
 ### [GPTConversatorium](https://github.com/PeterWaIIace/GPTConversatorium)
