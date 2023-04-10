@@ -22,10 +22,10 @@ PnP adhoc messaging with file sending using webRTC! Allows for transfering files
 ### **Facejitsu** (done with [Emteq](https://www.emteqlabs.com/)) - Affective gaming PoC
 
 Play games with your faces expressions, using Emteq facial sensing glasses! Affective gaming PoC built by me internally in Emteq. Games are experiments provided by [Gymnasium](https://github.com/Farama-Foundation/Gymnasium) project.  
-
+<div>
 <img src=https://user-images.githubusercontent.com/40773550/228829034-e0a69858-92bb-4754-8993-1599176c7dfd.gif width="340" height="200"/>
 <img src=https://user-images.githubusercontent.com/40773550/228829964-80705b7e-74c8-4e3f-bffd-81c974013597.gif width="340" height="200"/>
-
+</div>
 (clearly I am not the best player ...)
 
 ## OpenSourced Projects: 
