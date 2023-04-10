@@ -1,7 +1,1 @@
-#_config.yml
-
-url: 'https://peterwaiiace.github.io/' # your main domain
-baseurl: '' # if you're using custom domain keep this blank example: baseurl: ''
-
-theme: jekyll-theme-hacker
 
