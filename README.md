@@ -12,6 +12,7 @@ for(a)
 ```
 
 Here you can find my CV: [CV.pdf](https://github.com/PeterWaIIace/me.github.io/files/11256504/CV.pdf)
+
 Reach me via [Discord](https://discord.com/users/691353309868458056).
 
 ## My non-opensourced projects: 
@@ -70,13 +71,13 @@ LLM can generate code and test it! (feat. [BlackBoxTesting](https://github.com/P
 </p>
 
 
-<!--
-**PeterWaIIace/PeterWaIIace** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-
 ## Some of my publications:
 
-[Acoustic source localization using drone-embedded microphone array](https://asa.scitation.org/doi/abs/10.1121/1.5137614)
-[Intelligent vision system for controlling traffic lights at intersection entrances](https://yadda.icm.edu.pl/baztech/element/bwmeta1.element.baztech-c063fb29-b782-4f48-94cf-88ed10e0f249)
+[Acoustic source localization using drone-embedded microphone array - 2019](https://asa.scitation.org/doi/abs/10.1121/1.5137614)
+[Intelligent vision system for controlling traffic lights at intersection entrances - 2018](https://yadda.icm.edu.pl/baztech/element/bwmeta1.element.baztech-c063fb29-b782-4f48-94cf-88ed10e0f249)
+
+<!--
+**PeterWaIIace/PeterWaIIace** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
 Here are some ideas to get you started:
 
