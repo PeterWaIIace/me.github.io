@@ -11,7 +11,8 @@ for(a)
 }
 ```
 
-Here you can find my CV: [CV.pdf](https://github.com/PeterWaIIace/me.github.io/files/11556938/CV.pdf)
+
+Here you can find my CV: [CV.pdf](https://github.com/PeterWaIIace/me.github.io/files/13836639/CV.pdf)
 
 Reach me via [Discord](https://discord.com/users/691353309868458056), [Twitter](https://twitter.com/PW4ltz?t=MBCMu-_Q9iPr9dQSvZK77w&s=09).
 
