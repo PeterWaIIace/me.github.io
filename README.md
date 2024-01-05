@@ -19,7 +19,9 @@ Reach me via [Discord](https://discord.com/users/691353309868458056), [Twitter](
 
 ### Eyegestures
 
-Ad hoc (minimal calibration) Eye controlled cursor, detecting blinking, following your gaze move working in web browser. Eyes are new mouse. Most people use laptops or smartphones, which are devices with built-in camera systems, and many research papers already shown that a web camera is enough to track gaze. Following that way of thinking, I decided to develop this PoC for eye controlled tracker.
+Ad hoc (minimal calibration) eye-controlled cursor, detecting blinking, following your gaze movement, and working in a web browser!
+
+Eyes are the new mouse. With most people using laptops or smartphones equipped with built-in camera systems, the camera is already an enabled interface for use in our lives! Additionally, numerous research papers have already demonstrated that a web camera is sufficient to track gaze. Given this state of affairs, I decided to develop this proof of concept for an eye-controlled tracker, and it seems to work! (Well, do not expect too much, though.)
 
 [https://eyegestures.com/](https://eyegestures.com/) ![status](https://img.shields.io/badge/status-up-green.svg)
 
