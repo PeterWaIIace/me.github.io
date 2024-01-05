@@ -16,6 +16,14 @@ Here you can find my CV: [CV.pdf](https://github.com/PeterWaIIace/me.github.io/f
 
 Reach me via [Discord](https://discord.com/users/691353309868458056), [Twitter](https://twitter.com/PW4ltz?t=MBCMu-_Q9iPr9dQSvZK77w&s=09).
 
+## Publications:
+
+[OCOsense - smart glasses for analyzing facial expression using optomyographic sensors - 2023](https://dl.acm.org/doi/abs/10.1145/3544549.3583918)
+
+[Acoustic source localization using drone-embedded microphone array - 2019](https://asa.scitation.org/doi/abs/10.1121/1.5137614)
+
+[Intelligent vision system for controlling traffic lights at intersection entrances - 2018](https://yadda.icm.edu.pl/baztech/element/bwmeta1.element.baztech-c063fb29-b782-4f48-94cf-88ed10e0f249)
+
 ## My non-opensourced projects: 
 
 ### Eyegestures
@@ -92,13 +100,6 @@ LLM can generate code and test it! (feat. [BlackBoxTesting](https://github.com/P
   <img src="https://user-images.githubusercontent.com/40773550/218609556-b03af4a8-bbdd-4dc0-aa76-f0ffb5832244.png" width="644
 " height="400">
 </p>
-
-
-## Some of my publications:
-
-[### Acoustic source localization using drone-embedded microphone array - 2019](https://asa.scitation.org/doi/abs/10.1121/1.5137614)
-
-[### Intelligent vision system for controlling traffic lights at intersection entrances - 2018](https://yadda.icm.edu.pl/baztech/element/bwmeta1.element.baztech-c063fb29-b782-4f48-94cf-88ed10e0f249)
 
 <!--
 **PeterWaIIace/PeterWaIIace** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
