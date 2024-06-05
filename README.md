@@ -56,8 +56,11 @@ Ad hoc (minimal calibration) Eye controlled cursor, detecting blinking, followin
 Eyes are new mouse. Most people use laptops or smartphones, having easy access to built-in camera systems, and many research papers already shown that a web camera is enough to track gaze. Following that state of affair, I decided to develop this PoC for eye controlled tracker and it seems to work! (well do not expect too much though)
 
 Demos:
+
 1) [Cinema](https://eyegestures.com/cinema)
+
 2) [Game](https://eyegestures.com/game)
+
 
 
 <p align="center">
