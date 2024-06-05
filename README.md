@@ -1,4 +1,8 @@
-### HELLO WORLD
+## Piotr Walas
+
+HELLO WORLD I AM PIOTR
+
+<img src="https://user-images.githubusercontent.com/40773550/228984764-37cecee3-1a10-46f2-9044-478daee041b1.gif" width="240" height="240"/>
 
 ```
 void send_it_later_alligator();
@@ -12,16 +16,6 @@ for(a)
 My [Resume](https://peterwaiiace.github.io/me.github.io/cv.html).
 
 Reach me via [Discord](https://discord.com/users/691353309868458056) or walas.piotr@outlook.com.
-
-## Announcements:
-
-<a href="https://polar.sh/PeterWaIIace/posts"><picture><source media="(prefers-color-scheme: dark)" srcset="https://polar.sh/embed/posts.svg?org=PeterWaIIace&darkmode"><img alt="Posts on Polar" src="https://polar.sh/embed/posts.svg?org=PeterWaIIace"></picture></a>
-
-## Support
-
-<a href="https://polar.sh/PeterWaIIace"><picture><source media="(prefers-color-scheme: dark)" srcset="https://polar.sh/embed/subscribe.svg?org=PeterWaIIace&label=Subscribe&darkmode"><img alt="Subscribe on Polar" src="https://polar.sh/embed/subscribe.svg?org=PeterWaIIace&label=Subscribe"></picture></a>
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y1SGTBV)
 
 ## Publications:
 
