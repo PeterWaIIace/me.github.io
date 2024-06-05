@@ -69,7 +69,7 @@ Demos:
 
 <p align="center">
   <img src="https://github.com/PeterWaIIace/PeterWaIIace/assets/40773550/2ad25252-e96e-47d4-b25f-c47ba7f0f4f3" width="300" height="150">
-<img src="https://github.com/PeterWaIIace/PeterWaIIace/assets/40773550/f3132843-063a-439a-8e1c-2385ddfdccda" width="300
+  <img src="https://github.com/PeterWaIIace/PeterWaIIace/assets/40773550/f3132843-063a-439a-8e1c-2385ddfdccda" width="300
 " height="150">
 </p>
 
@@ -79,11 +79,11 @@ PnP adhoc messaging with file sending using webRTC! Allows for transfering files
 
 ### **Facejitsu** (done with [Emteq](https://www.emteqlabs.com/)) - Affective gaming PoC
 
-Play games with your faces expressions, using Emteq facial sensing glasses! Affective gaming PoC built by me internally in Emteq. Games are experiments provided by [Gymnasium](https://github.com/Farama-Foundation/Gymnasium) project.  
+Play games with your faces expressions, using Emteq facial sensing glasses! Affective gaming PoC built by me internally in Emteq. Games are experiments provided by [Gymnasium](https://github.com/Farama-Foundation/Gymnasium) project.
 
 <p align="center">
-  <img src=https://user-images.githubusercontent.com/40773550/228829034-e0a69858-92bb-4754-8993-1599176c7dfd.gif width="340" height="200">
-  <img src=https://user-images.githubusercontent.com/40773550/228829964-80705b7e-74c8-4e3f-bffd-81c974013597.gif width="340" height="200">
+  <img src="https://github.com/PeterWaIIace/me.github.io/assets/40773550/3c8794c5-6218-4b23-99b6-2172bdd419e2" width="340" height="200">
+  <img src="https://github.com/PeterWaIIace/me.github.io/assets/40773550/69cb5db8-ccd4-482d-947a-6b2dd49f504c" width="340" height="200">
 </p>
 
 (clearly I am not the best player ...)
