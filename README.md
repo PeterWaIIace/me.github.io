@@ -1,5 +1,3 @@
-## Piotr Walas
-
 HELLO WORLD I AM PIOTR
 
 <img src="https://user-images.githubusercontent.com/40773550/228984764-37cecee3-1a10-46f2-9044-478daee041b1.gif" width="240" height="240"/>
