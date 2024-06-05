@@ -10,8 +10,7 @@ for(a)
   while(crocodile){}
 }
 ```
-
-My [Resume](https://peterwaiiace.github.io/me.github.io/cv.pdf).
+My [Resume](https://github.com/user-attachments/files/15597366/CV.pdf).
 
 Reach me via [Discord](https://discord.com/users/691353309868458056) or walas.piotr@outlook.com.
 
