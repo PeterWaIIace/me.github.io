@@ -110,18 +110,18 @@ Repo focused on benchmarking matrix operations, to find and document where JAX i
 ### [ParticleLife](https://github.com/PeterWaIIace/ParticleLife)
 
 Cpp and Python implementation of particle life algorithm. Pretty and beautiful simulation of emergent structures caused by simple interactions of attraction:
-
 <p align="center">
-  <img src=https://user-images.githubusercontent.com/40773550/234987226-72c52e8c-6991-4da5-bcae-75d3ea1086da.gif  width="300" height="300">
-  <img src=https://user-images.githubusercontent.com/40773550/235330028-1cbec001-e376-451f-b626-23d3366c9347.gif  width="300" height="300">
+  <img src="https://user-images.githubusercontent.com/40773550/234987226-72c52e8c-6991-4da5-bcae-75d3ea1086da.gif"  width="300" height="300">
+  <img src="https://user-images.githubusercontent.com/40773550/235330028-1cbec001-e376-451f-b626-23d3366c9347.gif"  width="300" height="300">
 </p>
+
 
 ### [Boids](https://github.com/PeterWaIIace/Boids)
 
 Here is my take on implementation of 2D boids algorithm, case showing emergent behaviours based in systems based on simple building blocks.
 
 <p align="center">
-  <img src=https://user-images.githubusercontent.com/40773550/221363441-8afa31f7-3d15-4258-a417-1056fa4e333d.gif>
+  <img src="https://user-images.githubusercontent.com/40773550/221363441-8afa31f7-3d15-4258-a417-1056fa4e333d.gif"/>
 </p>
 
 ### [Genetic Painter](https://github.com/PeterWaIIace/GeneticPainter)
@@ -129,8 +129,8 @@ Here is my take on implementation of 2D boids algorithm, case showing emergent b
 Evolutionary algorithms can make art (or at aleast reproduce it).
 
 <p align="center">
-  <img src=https://user-images.githubusercontent.com/40773550/228100220-3f8be211-896a-440f-9829-57247c1e3208.gif width="240" height="240">
-  <img src=https://user-images.githubusercontent.com/40773550/228984764-37cecee3-1a10-46f2-9044-478daee041b1.gif width="240" height="240">
+  <img src="https://user-images.githubusercontent.com/40773550/228100220-3f8be211-896a-440f-9829-57247c1e3208.gif" width="240" height="240"/>
+  <img src="https://user-images.githubusercontent.com/40773550/228984764-37cecee3-1a10-46f2-9044-478daee041b1.gif" width="240" height="240"/>
 </p>
 
 ### [GPTConversatorium](https://github.com/PeterWaIIace/GPTConversatorium)
@@ -138,7 +138,7 @@ Evolutionary algorithms can make art (or at aleast reproduce it).
 What will happen if you let two LLMs talk to each other? 
 
 <p align="center">
-  <img src=https://user-images.githubusercontent.com/40773550/221328004-4e8bc586-06d5-4a8e-b592-d6674d0d2e36.png width="644
+  <img src="https://user-images.githubusercontent.com/40773550/221328004-4e8bc586-06d5-4a8e-b592-d6674d0d2e36.png" width="644
 " height="400">
 </p>
 
@@ -147,10 +147,11 @@ What will happen if you let two LLMs talk to each other?
 LLM can generate code and test it! (feat. [BlackBoxTesting](https://github.com/PeterWaIIace/BlackBoxTesting) [WIP] Framework)
 
 <p align="center">
-  <img src=https://user-images.githubusercontent.com/40773550/218609556-b03af4a8-bbdd-4dc0-aa76-f0ffb5832244.png width="644
+  <img src="https://user-images.githubusercontent.com/40773550/218609556-b03af4a8-bbdd-4dc0-aa76-f0ffb5832244.png" width="644
 " height="400">
 </p>
 
+<!--
 
 <!--
 **PeterWaIIace/PeterWaIIace** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
