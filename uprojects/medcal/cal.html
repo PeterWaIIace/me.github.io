@@ -19,13 +19,119 @@
 
     gtag('config', 'G-NT0BFMBWPK');
     </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2px;
+            padding: 2px;
+            background-color: #f0f0f0;
+        }
+        .container{
+            margin: 0px;
+        }
+        .calendar {
+            background-color: white;
+            /* width: 99%; */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 10px;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        /* Ensure calendar-day is a flex item to distribute evenly */
+        .calendar-day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 1px;
+            text-align: center;
+            margin: 0px;
+            width: 14%;
+        }
+
+        .empty_day {
+            border-width: 0px;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 4px;
+            padding: 1px;
+            text-align: center;
+            margin: 0px;
+            width: 14%;
+        }
+
+        /* Make sure the calendar-grid is a flex container */
+        .calendar-grid {
+            width: 100%;
+            /* display: flex; */
+            /* flex-wrap: wrap; */
+        }
+
+        .day-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        select {
+            width: 100%;
+            padding: 5px;
+            margin: 2px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-weight: bold;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            appearance: none;
+        }
+        .time-select {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        .duration-select {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        select:hover {
+            opacity: 0.8;
+        }
+
+        /* Smaller font for mobile devices */
+        @media (max-width: 576px) {
+            body {
+                font-size: 14px; /* Smaller font for mobile */
+            }
+        }
+
+        /* Slightly larger font for tablets */
+        @media (min-width: 577px) and (max-width: 768px) {
+            body {
+                font-size: 15px; /* Slightly larger for tablets */
+            }
+        }
+        
+        /* Larger font for desktop screens */
+        @media (min-width: 769px) {
+            body {
+                font-size: 16px; /* Standard font size for desktop */
+            }
+        }
+    </style>
 
 </head>
 <body>
     <div class="container">
-        <h1 class="mb-4">Kalkulator dyżurów medycznych v0.0.2</h1>
-        <p class="lead">Wypełnij formularz z dyżurami i naciśnij "Oblicz" żeby zobaczyć swój dochód.</p>
-        
+        <h1 class="mb-4">Kalkulator dyżurów medycznych v0.0.3</h1>
+        <p class="lead">
+            Wypełnij kalendarz poprzez wybranie kiedy zaczynasz 
+            <span class="green-text" style="color:#1565c0;font-weight: bold;"><b>dyżury</b></span> i ile 
+            <span class="blue-text"  style="color:#2e7d32;font-weight: bold"> <b>trwają</b></span>, a następnie naciśnij "Oblicz", żeby zobaczyć swój dochód.
+        </p>
+
         <form class="mb-4">
             <div class="row g-3 align-items-center">
                 <div class="col-auto">
@@ -42,11 +148,11 @@
                 </div>
             </div>
         </form>
-
+        
         <div class="col-auto">
             <p id="result"></p>
         </div>
-
+        
         <div class="row mb-3">
             <div class="col-md-4">
                 <label for="monthSelector" class="form-label">Wybierz miesiąc:</label>
@@ -63,40 +169,58 @@
                         <option value="10">Październik</option>
                         <option value="11">Listopad</option>
                         <option value="12">Grudzień</option>
-                    <!-- Add other months here -->
+                        <!-- Add other months here -->
                 </select>
             </div>
         </div>
-
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead id="calendarHeader">
-                    <tr>
-                        <th>Data</th>
-                        <th>Dzień</th>
-                        <th>Start dyżuru</th>
-                        <th>Czas trwania dyżuru</th>
-                    </tr>
-                </thead>
-                <tbody id="calendarBody">
-                    <!-- Table rows will be dynamically generated here -->
-                </tbody>
-            </table>
-        </div>
+        
     </div>
+    <div class="container">
+        <div class="calendar">
+            <div class="calendarHeader">
+                <h2>Wrzesień 2024</h2>
+                <span>📅</span>
+            </div>
+            <div class="col-12">
+                <div class="row">
+                    <!-- Day labels -->
+                    <div class="col-1 col-sm-1 col-md-1 text-center font-weight-bold" style="width: 14%;">Pn</div>
+                    <div class="col-1 col-sm-1 col-md-1 text-center font-weight-bold" style="width: 14%;">Wt</div>
+                    <div class="col-1 col-sm-1 col-md-1 text-center font-weight-bold" style="width: 14%;">Śr</div>
+                    <div class="col-1 col-sm-1 col-md-1 text-center font-weight-bold" style="width: 14%;">Czw</div>
+                    <div class="col-1 col-sm-1 col-md-1 text-center font-weight-bold" style="width: 14%;">Pt</div>
+                    <div class="col-1 col-sm-1 col-md-1 text-center font-weight-bold" style="width: 14%;">So</div>
+                    <div class="col-1 col-sm-1 col-md-1 text-center font-weight-bold" style="width: 14%;">Nd</div>
+                </div>
+                <div class="calendarBody calendar-grid">
+                    <!-- Days will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+        <p></p>
+        <p>This software was built by Piotr Walas. I hope it will help and serve you well! Check my other projects:
+            <a href="https://peterwaiiace.github.io/me.github.io/">portfolio</a>
+        </p>
+    </div>
+
 
 <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
 <script>
     kofiWidgetOverlay.draw('peterwallace', {
-    'type': 'floating-chat',
-    'floating-chat.donateButton.text': 'Support me',
-    'floating-chat.donateButton.background-color': '#00b9fe',
-    'floating-chat.donateButton.text-color': '#fff'
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': 'Support me',
+        'floating-chat.donateButton.background-color': '#00b9fe',
+        'floating-chat.donateButton.text-color': '#fff'
     });
 </script>
 
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
 // Get today's date
+const months = ["Styczeń","Luty","Marzec","Kwiecień","Maj","Czerwiec","Lipiec","Sierpień","Wrzesień","Październik","Listopad","Grudzień"];
 const today = new Date();
 const year = today.getFullYear();
 // const month = today.getMonth();
@@ -104,77 +228,134 @@ const monthSelector = document.getElementById('monthSelector');
 
 // Function to get the number of days in a month
 function daysInMonth(year, month) {
-    return new Date(year, month + 1, 0).getDate();
+    return new Date(year, month , 0).getDate();
+}
+
+// Function to generate the calendar days
+function generateCalendarDays(startDate,endDate) {
+    const days = ['Pn', 'Wt', 'Śr', 'Czw', 'Pt', 'So', 'Nd'];
+    const calendarGrid = document.querySelector('.calendar-grid');
+    // Assume the first day of the month starts on a Monday for simplicity
+    // const firstDayOfMonth = new Date(2024, 8, 1); // September 2024
+    // const lastDayOfMonth = new Date(2024, 8, 30); // September 2024
+    // console.log(firstDayOfMonth.getMonth());
+    const firstDayOfMonth = startDate;
+    const lastDayOfMonth = endDate;
+    
+    // Get the day of the week for the 1st of the month
+    let startDay = firstDayOfMonth.getDay();
+    if (startDay === 0) startDay = 7; // Adjust so Monday is 1, Sunday is 7
+
+    // Create cells for each day of the month
+    let row =  document.createElement('div');
+    row.className = 'row';
+    calendarGrid.appendChild(row);
+    
+    let emptyDays = 1;
+    for (; emptyDays < startDay; emptyDays++) {
+        // const emptyDay = document.createElement('div');
+        row.innerHTML += '<div class="col-1 col-sm-1 col-md-1 empty_day"></div>';
+        // row.appendChild(emptyDay);
+    }
+
+    emptyDays = emptyDays - 1;
+    // Create empty cells for days before the 1st day
+    let day = 1;
+    for (; day <= daysInMonth(year,startDate.getMonth() + 1); day++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'col-1 col-sm-1 col-md-1 calendar-day';
+        dayElement.innerHTML = `
+            <div class="day-number">${day}</div>
+            <select class="time-select">
+                <option value="0">0:00</option>
+                <option value="1">1:00</option>
+                <option value="2">2:00</option>
+                <option value="3">3:00</option>
+                <option value="4">4:00</option>
+                <option value="5">5:00</option>
+                <option value="6">6:00</option>
+                <option value="7">7:00</option>
+                <option value="8">8:00</option>
+                <option value="9">9:00</option>
+                <option value="10">10:00</option>
+                <option value="11">11:00</option>
+                <option value="12">12:00</option>
+                <option value="13">13:00</option>
+                <option value="14">14:00</option>
+                <option value="15">15:00</option>
+                <option value="16">16:00</option>
+                <option value="17">17:00</option>
+                <option value="18">18:00</option>
+                <option value="19">19:00</option>
+                <option value="20">20:00</option>
+                <option value="21">21:00</option>
+                <option value="22">22:00</option>
+                <option value="23">23:00</option>
+            </select>
+            <select class="duration-select">
+                <option value="0">0 h</option>
+                <option value="1">1 h</option>
+                <option value="2">2 h</option>
+                <option value="3">3 h</option>
+                <option value="4">4 h</option>
+                <option value="5">5 h</option>
+                <option value="6">6 h</option>
+                <option value="7">7 h</option>
+                <option value="8">8 h</option>
+                <option value="9">9 h</option>
+                <option value="10">10 h</option>
+                <option value="11">11 h</option>
+                <option value="12">12 h</option>
+                <option value="13">13 h</option>
+                <option value="14">14 h</option>
+                <option value="15">15 h</option>
+                <option value="16">16 h</option>
+                <option value="17">17 h</option>
+                <option value="18">18 h</option>
+                <option value="19">19 h</option>
+                <option value="20">20 h</option>
+                <option value="21">21 h</option>
+                <option value="22">22 h</option>
+                <option value="23">23 h</option>
+            </select>
+        `;
+        row.appendChild(dayElement);
+
+        if((day + emptyDays) % 7 == 0)
+        {
+            // Create cells for each day of the month
+            // col = document.createElement('div');
+            row = document.createElement('div');
+            // col.className = 'col-12';
+            row.className = 'row';
+            // row.style = 'width: 100%;'
+            // col.appendChild(row);
+            // calendarGrid.appendChild(col);
+            calendarGrid.appendChild(row);
+        }
+    }
+
+    // Create empty cells for days after the last day
+    const endDay = (startDay + 30 - 1) % 7;
+    for (let i = endDay; i < 7; i++) {
+        row.innerHTML += '<div class="col-1 col-sm-1 col-md-1 empty_day"></div>';
+    }
 }
 
 // Generate calendar with days and hours
 function generateCalendar(month) {
-    const calendarHeader = document.getElementById('calendarHeader');
-    calendarHeader.innerHTML = '';
-    const calendarBody = document.getElementById('calendarBody');
+    const calendarHeader = document.getElementsByClassName('calendarHeader')[0];
+    const calendarBody = document.getElementsByClassName('calendarBody')[0];
     calendarBody.innerHTML = ''; // Clear previous calendar
     
-    // Generate header row with days
-    const headerRow = document.createElement('tr');
-    const emptyCell = document.createElement('th');
-    const headers = ["data","dzień","start dyżuru","czas trwania dyżuru"];
-    for (let n = 0; n <= headers.length - 1; n++) {
-        const columnHeader = document.createElement('th');
-        columnHeader.innerText = headers[n];
-        headerRow.appendChild(columnHeader);
-    }
-    calendarHeader.appendChild(headerRow);
-
-    // Generate body rows with hours (0-23)
-    const daysOfWeek = ["Nd", "Pn", "Wt", "Śr", "Czw", "Pt", "So"];
-    const days = daysInMonth(year, month - 1);
-    for (let day = 1; day <= days; day++) {
-        const row = document.createElement('tr');
-
-        // Hour label
-        const dateCell = document.createElement('td');
-        dateCell.innerText = `${year}-${month}-${day}`;
-        row.appendChild(dateCell);
-        
-        const date = new Date(dateCell.innerText);
-        const dayIndex = date.getDay(); // Get the day of the week (0-6)
-        
-        const dayNameCell = document.createElement('td');
-        dayNameCell.innerText = daysOfWeek[dayIndex];
-        row.appendChild(dayNameCell);
-
-        // Hour chooser (third column)
-        const hourChooserCell = document.createElement('td');
-        const hourChooser = document.createElement('select');
-
-        // Create options for hours from 0 to 12
-        for (let hour = 0; hour <= 23; hour++) {
-            const option = document.createElement('option');
-            option.value = hour;
-            option.innerText = hour.toString().padStart(2, '0') + ':00';
-            hourChooser.appendChild(option);
-        }
-
-        hourChooserCell.appendChild(hourChooser);
-        row.appendChild(hourChooserCell);
-
-        // Time duration chooser (fourth column)
-        const durationChooserCell = document.createElement('td');
-        const durationChooser = document.createElement('select');
-
-        // Create options for durations from 0 to 12 hours
-        for (let duration = 0; duration <= 16; duration++) {
-            const option = document.createElement('option');
-            option.value = duration;
-            option.innerText = duration + ' godzin' + (duration === 1 ? 'e' : '') + ([2,3,4].includes(duration)? 'y' : '');
-            durationChooser.appendChild(option);
-        }
-
-        durationChooserCell.appendChild(durationChooser);
-        row.appendChild(durationChooserCell);
-
-        calendarBody.appendChild(row);
-    }
+    const start = new Date(year, month - 1, 1);
+    calendarHeader.innerHTML = `<div class="calendarHeader">
+        <h2>${months[start.getMonth()]} ${start.getFullYear()}</h2>
+        </div>
+        `;
+    const end = new Date(year, month, daysInMonth(year, month));
+    console.log(start,end)
+    generateCalendarDays(start,end);
 }
 
 // Toggle the selection of a cell when clicked
@@ -183,27 +364,27 @@ function toggleHour(cell) {
 }
 
 function getSelectedHoursAndDurations() {
-    const calendarBody = document.getElementById('calendarBody');
-    const rows = calendarBody.getElementsByTagName('tr');
+    const calendarBody = document.getElementsByClassName('calendarBody')[0];
+    const rows = calendarBody.getElementsByClassName('calendar-day');
     const selectedData = [];
 
     for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
 
         // Grab the date (first cell)
-        const date = row.cells[0].innerText;
+        const day = row.getElementsByClassName("day-number")[0].innerText;
 
         // Grab the selected hour (third cell)
-        const hourSelect = row.cells[2].getElementsByTagName('select')[0];
+        const hourSelect = row.getElementsByTagName("select")[0];
         const selectedHour = hourSelect.value;
 
         // Grab the selected duration (fourth cell)
-        const durationSelect = row.cells[3].getElementsByTagName('select')[0];
+        const durationSelect = row.getElementsByTagName("select")[1];
         const selectedDuration = durationSelect.value;
 
         // Push the result as an object (or array) to the list
         selectedData.push({
-            date: date,
+            date: `${year}-${monthSelector.value}-${day}`,
             hour: selectedHour,
             duration: selectedDuration
         });
@@ -301,6 +482,7 @@ function calculateIncome() {
     
     let totalIncome = 0;
     let totalHours = 0;
+    let night_hours = 0;
     for(let i = 0; i < workingPeriodsData.length; i++)
     {
         let shift = workingPeriodsData[i];
@@ -312,9 +494,14 @@ function calculateIncome() {
         {
             if(starting_hour + h >= 24)
             {
+                console.log("incrementing day");
+                duration = duration - h;
+                h = 0;
                 starting_hour = 0;
                 date = incrementDate(date);
             }
+
+            console.log("incrementing day", starting_hour, h);
 
             let bonuses = 0;
             if(isSunday(date) || isPolishHoliday(date))
@@ -323,7 +510,13 @@ function calculateIncome() {
             }
             if(isNightShift(starting_hour + h))
             {
+                console.log(starting_hour + h);
                 bonuses += hourlyRate * 0.65; // Za pracę w godzinach nocnych przysługuje dodatek w wysokości nie mniejszej niż 65% stawki godzinowej.
+                night_hours += 1;
+            }
+            else
+            {
+                console.log("day: ", starting_hour + h);
             }
             
             totalIncome += hourlyRate + bonuses;
@@ -332,7 +525,7 @@ function calculateIncome() {
         }
     }
 
-    document.getElementById('result').innerText = `Dochód: ${totalIncome.toFixed(2)} PLN. Przepracowane godziny: ${totalHours}.`;
+    document.getElementById('result').innerText = `Dochód: ${totalIncome.toFixed(2)} PLN. Przepracowane godziny: ${totalHours}. W ciagu nocy: ${night_hours}`;
 }
 
 // Update the calendar when the month is selected
