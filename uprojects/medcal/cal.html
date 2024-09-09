@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Hours and Income Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            table-layout: fixed;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 1px;
+            text-align: center;
+        }
+        td {
+            height: 4px;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        td.selected {
+            background-color: lightblue;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Work Hours and Income Calculator</h1>
+
+<p>Wypełnij formularz z dyżurami i nastepnie kliknij "Oblicz" żeby zobaczyć swój dochód.</p>
+
+<div class="controls">
+    <label for="hourlyRate">Twoja stawka podstawowa: </label>
+    <input type="number" id="hourlyRate" value="20"> PLN
+
+    <button onclick="calculateIncome()">Oblicz</button>
+</div>
+<label for="monthSelector">Wybierz miesiąc:</label>
+<select id="monthSelector">
+    <option value="0">Styczeń</option>
+    <option value="1">Luty</option>
+    <option value="2">Marzec</option>
+    <option value="3">Kwiecień</option>
+    <option value="4">Maj</option>
+    <option value="5">Czerwiec</option>
+    <option value="6">Lipiec</option>
+    <option value="7">Sierpień</option>
+    <option value="8">Wrzesień</option>
+    <option value="9">Październik</option>
+    <option value="10">Listopad</option>
+    <option value="11">Grudzień</option>
+</select>
+
+
+<table id="calendar">
+    <thead id="calendarHeader">
+        <!-- Days of the month will be populated here -->
+    </thead>
+    <tbody id="calendarBody">
+        <!-- Calendar hours will be populated here -->
+    </tbody>
+</table>
+
+<p id="result"></p>
+
+<script>
+// Get today's date
+const today = new Date();
+const year = today.getFullYear();
+// const month = today.getMonth();
+const monthSelector = document.getElementById('monthSelector');
+
+// Function to get the number of days in a month
+function daysInMonth(year, month) {
+    return new Date(year, month + 1, 0).getDate();
+}
+
+// Generate calendar with days and hours
+function generateCalendar(month) {
+    const calendarHeader = document.getElementById('calendarHeader');
+    calendarHeader.innerHTML = '';
+    const calendarBody = document.getElementById('calendarBody');
+    calendarBody.innerHTML = ''; // Clear previous calendar
+    
+    // Generate header row with days
+    const headerRow = document.createElement('tr');
+    const emptyCell = document.createElement('th');
+    const headers = ["data","dzień","start dyżuru","czas trwania dyżuru"];
+    for (let n = 0; n <= headers.length - 1; n++) {
+        const columnHeader = document.createElement('th');
+        columnHeader.innerText = headers[n];
+        headerRow.appendChild(columnHeader);
+    }
+    calendarHeader.appendChild(headerRow);
+
+    // Generate body rows with hours (0-23)
+    const daysOfWeek = ["Nd", "Pn", "Wt", "Śr", "Czw", "Pt", "So"];
+    const days = daysInMonth(year, month);
+    for (let day = 1; day <= days; day++) {
+        const row = document.createElement('tr');
+
+        // Hour label
+        const dateCell = document.createElement('td');
+        dateCell.innerText = `${year}-${month}-${day}`;
+        row.appendChild(dateCell);
+        
+        const date = new Date(dateCell.innerText);
+        const dayIndex = date.getDay(); // Get the day of the week (0-6)
+        
+        const dayNameCell = document.createElement('td');
+        dayNameCell.innerText = daysOfWeek[dayIndex];
+        row.appendChild(dayNameCell);
+
+        // Hour chooser (third column)
+        const hourChooserCell = document.createElement('td');
+        const hourChooser = document.createElement('select');
+
+        // Create options for hours from 0 to 12
+        for (let hour = 0; hour <= 23; hour++) {
+            const option = document.createElement('option');
+            option.value = hour;
+            option.innerText = hour.toString().padStart(2, '0') + ':00';
+            hourChooser.appendChild(option);
+        }
+
+        hourChooserCell.appendChild(hourChooser);
+        row.appendChild(hourChooserCell);
+
+        // Time duration chooser (fourth column)
+        const durationChooserCell = document.createElement('td');
+        const durationChooser = document.createElement('select');
+
+        // Create options for durations from 0 to 12 hours
+        for (let duration = 0; duration <= 16; duration++) {
+            const option = document.createElement('option');
+            option.value = duration;
+            option.innerText = duration + ' godzin' + (duration === 1 ? 'e' : '') + ([2,3,4].includes(duration)? 'y' : '');
+            durationChooser.appendChild(option);
+        }
+
+        durationChooserCell.appendChild(durationChooser);
+        row.appendChild(durationChooserCell);
+
+        calendarBody.appendChild(row);
+    }
+}
+
+// Toggle the selection of a cell when clicked
+function toggleHour(cell) {
+    cell.classList.toggle('selected');
+}
+
+function getSelectedHoursAndDurations() {
+    const calendarBody = document.getElementById('calendarBody');
+    const rows = calendarBody.getElementsByTagName('tr');
+    const selectedData = [];
+
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+
+        // Grab the date (first cell)
+        const date = row.cells[0].innerText;
+
+        // Grab the selected hour (third cell)
+        const hourSelect = row.cells[2].getElementsByTagName('select')[0];
+        const selectedHour = hourSelect.value;
+
+        // Grab the selected duration (fourth cell)
+        const durationSelect = row.cells[3].getElementsByTagName('select')[0];
+        const selectedDuration = durationSelect.value;
+
+        // Push the result as an object (or array) to the list
+        selectedData.push({
+            date: date,
+            hour: selectedHour,
+            duration: selectedDuration
+        });
+    }
+
+    return selectedData;
+}
+
+function isHolidays(date_str)
+{
+    const date = new Date(date_str);
+    const dayIndex = date.getDay(); // Get the day of the week (0-6)
+    if(dayIndex == 0){
+        return true;
+    }
+    return false;
+};
+
+function isNightShift(hour)
+{
+    if(hour > 21){
+        return true;
+    }
+    else if(hour < 7)
+    {
+        return true;
+    }
+    return false;
+};
+
+function incrementDate(dateString) {
+    // Convert the date string to a Date object
+
+    // Create a Date object
+    const date = new Date(dateString);
+
+    // Increment the date by 1 day
+    date.setDate(date.getDate() + 1);
+
+    // Format the date back to YYYY-MM-DD
+    const newYear = date.getFullYear();
+    const newMonth = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+    const newDay = date.getDate().toString().padStart(2, '0');
+
+    return `${newYear}-${newMonth}-${newDay}`;
+}
+
+// Calculate total income based on selected hours
+function calculateIncome() {
+    const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
+    const workingPeriodsData = getSelectedHoursAndDurations();
+    
+    let totalIncome = 0;
+    let totalHours = 0;
+    for(let i = 0; i < workingPeriodsData.length; i++)
+    {
+        let shift = workingPeriodsData[i];
+        let date = shift.date;
+        let starting_hour = parseInt(shift.hour, 10);
+        let duration = parseInt(shift.duration,10);
+
+        for(let h = 0; h < duration; h++)
+        {
+            if(starting_hour + h >= 24)
+            {
+                starting_hour = 0;
+                date = incrementDate(date);
+            }
+
+            let bonuses = 0;
+            if(isHolidays(date))
+            {
+                bonuses += hourlyRate * 0.45; // w niedzielę święta i dni wolne od pracy przysługuje z kolei dodatek w wysokości nie niższej niż 45% stawki godzinowej.
+            }
+            if(isNightShift(starting_hour + h))
+            {
+                bonuses += hourlyRate * 0.65; // Za pracę w godzinach nocnych przysługuje dodatek w wysokości nie mniejszej niż 65% stawki godzinowej.
+            }
+            
+            totalIncome += hourlyRate + bonuses;
+            totalHours += 1;
+            
+        }
+    }
+
+    document.getElementById('result').innerText = `Dochód: ${totalIncome.toFixed(2)} PLN. Przepracowane godziny: ${totalHours}.`;
+}
+
+// Update the calendar when the month is selected
+monthSelector.addEventListener('change', (event) => {
+    console.log(event.target.value)
+    const selectedMonth = parseInt(event.target.value);
+    generateCalendar(selectedMonth);
+});
+
+// Initialize the calendar with the current month
+monthSelector.value = today.getMonth();  // Set the select to current month
+console.log(today.getMonth());
+generateCalendar(today.getMonth());        // Render the current month's calendar
+
+
+// Generate the calendar when the page loads
+// generateCalendar();
+</script>
+
+</body>
+</html>
