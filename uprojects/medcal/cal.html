@@ -51,18 +51,18 @@
 </div>
 <label for="monthSelector">Wybierz miesiąc:</label>
 <select id="monthSelector">
-    <option value="0">Styczeń</option>
-    <option value="1">Luty</option>
-    <option value="2">Marzec</option>
-    <option value="3">Kwiecień</option>
-    <option value="4">Maj</option>
-    <option value="5">Czerwiec</option>
-    <option value="6">Lipiec</option>
-    <option value="7">Sierpień</option>
-    <option value="8">Wrzesień</option>
-    <option value="9">Październik</option>
-    <option value="10">Listopad</option>
-    <option value="11">Grudzień</option>
+    <option value="1">Styczeń</option>
+    <option value="2">Luty</option>
+    <option value="3">Marzec</option>
+    <option value="4">Kwiecień</option>
+    <option value="5">Maj</option>
+    <option value="6">Czerwiec</option>
+    <option value="7">Lipiec</option>
+    <option value="8">Sierpień</option>
+    <option value="9">Wrzesień</option>
+    <option value="10">Październik</option>
+    <option value="11">Listopad</option>
+    <option value="12">Grudzień</option>
 </select>
 
 
@@ -109,7 +109,7 @@ function generateCalendar(month) {
 
     // Generate body rows with hours (0-23)
     const daysOfWeek = ["Nd", "Pn", "Wt", "Śr", "Czw", "Pt", "So"];
-    const days = daysInMonth(year, month);
+    const days = daysInMonth(year, month - 1);
     for (let day = 1; day <= days; day++) {
         const row = document.createElement('tr');
 
@@ -282,9 +282,8 @@ monthSelector.addEventListener('change', (event) => {
 });
 
 // Initialize the calendar with the current month
-monthSelector.value = today.getMonth();  // Set the select to current month
-console.log(today.getMonth());
-generateCalendar(today.getMonth());        // Render the current month's calendar
+monthSelector.value = today.getMonth() + 1;  // Set the select to current month
+generateCalendar(monthSelector.value);        // Render the current month's calendar
 
 
 // Generate the calendar when the page loads
