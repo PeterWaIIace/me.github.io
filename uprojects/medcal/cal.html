@@ -201,15 +201,58 @@ function getSelectedHoursAndDurations() {
     return selectedData;
 }
 
-function isHolidays(date_str)
+function isSunday(dateString)
 {
-    const date = new Date(date_str);
+    const date = new Date(dateString);
     const dayIndex = date.getDay(); // Get the day of the week (0-6)
     if(dayIndex == 0){
         return true;
     }
     return false;
 };
+
+function isPolishHoliday(dateString)
+{
+    // Parse the date string to create a Date object
+    const date = new Date(dateString);
+    const dayOfWeek = date.getDay();
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // JavaScript months are 0-based, so add 1
+    const year = date.getFullYear();
+
+    // Check for fixed-date holidays
+    if (dayOfWeek === 0) return true; // Sunday
+    if (month === 1 && day === 1) return true; // Nowy Rok
+    if (month === 5 && day === 1) return true; // 1 maja
+    if (month === 5 && day === 3) return true; // 3 maja
+    if (month === 8 && day === 15) return true; // Wniebowzięcie Najświętszej Marii Panny, Święto Wojska Polskiego
+    if (month === 11 && day === 1) return true; // Dzień Wszystkich Świętych
+    if (month === 11 && day === 11) return true; // Dzień Niepodległości 
+    if (month === 12 && day === 25) return true; // Boże Narodzenie
+    if (month === 12 && day === 26) return true; // Boże Narodzenie
+
+    // Calculate Easter Sunday date
+    const a = year % 19;
+    const b = year % 4;
+    const c = year % 7;
+    let d = (a * 19 + 24) % 30;
+    const e = (2 * b + 4 * c + 6 * d + 5) % 7;
+
+    if (d === 29 && e === 6) d -= 7;
+    if (d === 28 && e === 6 && a > 10) d -= 7;
+
+    const easter = new Date(year, 2, 22 + d + e); // Easter is on March 22 + d + e days
+    const easterMonday = new Date(easter);
+    easterMonday.setDate(easter.getDate() + 1); // Easter Monday
+
+    const corpusChristi = new Date(easter);
+    corpusChristi.setDate(easter.getDate() + 60); // Corpus Christi
+
+    if (date.toDateString() === easterMonday.toDateString()) return true; // Wielkanoc (poniedziałek)
+    if (date.toDateString() === corpusChristi.toDateString()) return true; // Boże Ciało
+
+    return false;
+}
 
 function isNightShift(hour)
 {
@@ -263,7 +306,7 @@ function calculateIncome() {
             }
 
             let bonuses = 0;
-            if(isHolidays(date))
+            if(isSunday(date) || isPolishHoliday(date))
             {
                 bonuses += hourlyRate * 0.45; // w niedzielę święta i dni wolne od pracy przysługuje z kolei dodatek w wysokości nie niższej niż 45% stawki godzinowej.
             }
