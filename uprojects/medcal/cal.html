@@ -1,81 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work Hours and Income Calculator</title>
+    <title>Kalkulator dyżurów medycznych v0.0.2</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        table {
-            border-collapse: collapse;
-            width: 50%;
-            table-layout: fixed;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 1px;
-            text-align: center;
-        }
-        td {
-            height: 4px;
-        }
-        th {
-            background-color: #f0f0f0;
-        }
-        td.selected {
-            background-color: lightblue;
-        }
-        #result {
-            margin-top: 20px;
-            font-weight: bold;
-        }
-        .controls {
-            margin: 20px 0;
-        }
+        body { padding-top: 20px; }
+        .table-responsive { max-height: auto; overflow-y: auto; }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1 class="mb-4">Kalkulator dyżurów medycznych v0.0.2</h1>
+        <p class="lead">Wypełnij formularz z dyżurami i naciśnij "Oblicz" żeby zobaczyć swój dochód.</p>
+        
+        <form class="mb-4">
+            <div class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label for="basicRate" class="col-form-label">Twoja stawka podstawowa:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="number" id="basicRate" class="form-control" value="20" min="0" step="0.01">
+                </div>
+                <div class="col-auto">
+                    <span class="form-text">PLN</span>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-primary" onclick="calculateIncome()">Oblicz</button>
+                </div>
+            </div>
+        </form>
 
-<h1>Kalkulator dyżurów medycznych v0.0.1</h1>
+        <div class="col-auto">
+            <p id="result"></p>
+        </div>
 
-<p>Wypełnij formularz z dyżurami i nastepnie kliknij "Oblicz" żeby zobaczyć swój dochód.</p>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="monthSelector" class="form-label">Wybierz miesiąc:</label>
+                <select id="monthSelector" class="form-select">
+                        <option value="1">Styczeń</option>
+                        <option value="2">Luty</option>
+                        <option value="3">Marzec</option>
+                        <option value="4">Kwiecień</option>
+                        <option value="5">Maj</option>
+                        <option value="6">Czerwiec</option>
+                        <option value="7">Lipiec</option>
+                        <option value="8">Sierpień</option>
+                        <option value="9">Wrzesień</option>
+                        <option value="10">Październik</option>
+                        <option value="11">Listopad</option>
+                        <option value="12">Grudzień</option>
+                    <!-- Add other months here -->
+                </select>
+            </div>
+        </div>
 
-<div class="controls">
-    <label for="hourlyRate">Twoja stawka podstawowa: </label>
-    <input type="number" id="hourlyRate" value="20"> PLN
-
-    <button onclick="calculateIncome()">Oblicz</button>
-</div>
-<label for="monthSelector">Wybierz miesiąc:</label>
-<select id="monthSelector">
-    <option value="1">Styczeń</option>
-    <option value="2">Luty</option>
-    <option value="3">Marzec</option>
-    <option value="4">Kwiecień</option>
-    <option value="5">Maj</option>
-    <option value="6">Czerwiec</option>
-    <option value="7">Lipiec</option>
-    <option value="8">Sierpień</option>
-    <option value="9">Wrzesień</option>
-    <option value="10">Październik</option>
-    <option value="11">Listopad</option>
-    <option value="12">Grudzień</option>
-</select>
-
-
-<table id="calendar">
-    <thead id="calendarHeader">
-        <!-- Days of the month will be populated here -->
-    </thead>
-    <tbody id="calendarBody">
-        <!-- Calendar hours will be populated here -->
-    </tbody>
-</table>
-
-<p id="result"></p>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead id="calendarHeader">
+                    <tr>
+                        <th>Data</th>
+                        <th>Dzień</th>
+                        <th>Start dyżuru</th>
+                        <th>Czas trwania dyżuru</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody">
+                    <!-- Table rows will be dynamically generated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 <script>
 // Get today's date
@@ -235,7 +232,7 @@ function incrementDate(dateString) {
 
 // Calculate total income based on selected hours
 function calculateIncome() {
-    const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
+    const hourlyRate = parseFloat(document.getElementById('basicRate').value);
     const workingPeriodsData = getSelectedHoursAndDurations();
     
     let totalIncome = 0;
