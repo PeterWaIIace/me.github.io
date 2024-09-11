@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Type Over Grey Letters Game</title>
+    <title>TypeIt!</title>
     <style>
         body {
             font-family: 'Courier New', monospace;
@@ -121,6 +121,7 @@
 <body>
     <div id="game-container">
         <h1>Type it!</h1>
+        <div id="date"></div>
         <div id="typing-area">
             <div id="sentence"></div>
             <div id="overlay"></div>
@@ -249,6 +250,7 @@
         const todaysSentence = elapsedDays % sentences.length;
 
         let startTime, endTime;
+        const dateElement = document.getElementById('date');
         const sentenceElement = document.getElementById('sentence');
         const overlayElement = document.getElementById('overlay');
         const inputElement = document.getElementById('input');
@@ -256,9 +258,10 @@
         const copiedIndication = document.getElementById('copied');
         const copyButton = document.getElementById('copy-button');
 
+        dateElement.innerText = `Haiku for ${today.getDay()}.${today.getMonth()+1}.${today.getFullYear()}`;
         let errorList = [];
         let timingList = [];
-        let sentence = `Typed it!: \n`;
+        let sentence = `${today.getDay()}.${today.getMonth()+1}.${today.getFullYear()}\n\n`;
         function getRandomSentence() {
             return sentences[Math.floor(Math.random() * sentences.length)];
         }
