@@ -259,7 +259,7 @@
             const wpm = Math.round((wordsTyped / timeElapsed) * 60);
             
             resultElement.textContent = `Your typing speed: ${wpm} WPM`;
-            sentence += `\n🎉${wpm} WPM🎉`
+            sentence += `\n🎉${wpm} WPM🎉 and 😬${errorList.length} mistakes😬`
             sentence += `\nTypeIt.com`
             copyButton.style.display = 'block';
             inputElement.disabled = true;
