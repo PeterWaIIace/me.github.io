@@ -65,6 +65,7 @@
             font-size: 20px;
             font-weight: bold;
             margin-top: 20px;
+            margin-bottom: 20px;
         }
         #start-button {
             padding: 10px 20px;
@@ -89,10 +90,14 @@
             color: red;
         }
         #copy-button {
-            margin-top: 10px;
             padding: 10px 20px;
-            font-size: 16px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            font-family: 'Courier New', monospace;
         }
     </style>
 
@@ -116,7 +121,9 @@
             <textarea id="input" rows="3" autocomplete="off" disabled></textarea>
         </div>
         <div id="result"></div>
-        <button id="copy-button">Share it!</button>
+        <div>
+            <button id="copy-button">Share it!</button>
+        </div>
     </div>
 
     <script>
@@ -136,6 +143,13 @@
     function convertToItalic(text) {
         return text.split('').map(char => boldScriptMap[char] || char).join('');
     }
+
+    function makeVisible(text) {
+    return text
+        .replace(/ /g, ' ')      // Replace spaces with bullet point
+        .replace(/\n/g, '↵\n');  // Replace newlines with return symbol, preserving the line breaks
+    }
+
 
     const sentences = [
     /*September 11*/ "Autumn leaves whisper\nMemories float on the breeze\nHope rises anew",
@@ -242,14 +256,14 @@
         }
 
         function startGame() {
-            sentenceElement.textContent = sentences[todaysSentence];
+            sentenceElement.textContent = makeVisible(sentences[todaysSentence]);
             overlayElement.innerHTML = '';
             inputElement.value = '';
             inputElement.disabled = false;
             inputElement.focus();
             startTime = new Date().getTime();
             copyButton.style.display = 'none';
-            resultElement.textContent = '';
+            // resultElement.textContent = '';
         }
 
         function endGame() {
@@ -258,7 +272,7 @@
             const wordsTyped = sentenceElement.textContent.split(' ').length;
             const wpm = Math.round((wordsTyped / timeElapsed) * 60);
             
-            resultElement.textContent = `Your typing speed: ${wpm} WPM`;
+            resultElement.textContent = `Your typing speed: ${wpm} WPM\nwith ${errorList.length} mistakes`;
             sentence += `\n🎉${wpm} WPM🎉 and 😬${errorList.length} mistakes😬`
             sentence += `\nTypeIt.com`
             copyButton.style.display = 'block';
@@ -277,26 +291,30 @@
             const duration = (nowTime - startTime) / 1000; // in seconds
             timingList.push(duration);
             let overlayHTML = '';
+            // inputElement.value = makeVisible(inputElement.value)
             if(currentInput.length + 1 < sentenceElement.textContent.length)
             {
-                if((sentenceElement.textContent[currentInput.length] === "\n")
+                if((sentenceElement.textContent[currentInput.length] === "↵")
                     && (currentInput[currentInput.length-1] == currentSentence[currentInput.length-1])
                 )
                 {
-                    inputElement.value += "\n";
+                    inputElement.value[currentInput.length] = ''
+                    inputElement.value += "↵\n";
                 }
             }
 
             for (let i = 0; i < currentSentence.length; i++) {
                 if (i < currentInput.length) {
                     if (currentInput[i] === currentSentence[i] && errorList.includes(i)) {
-                        console.log(i,errorList);
                         overlayHTML += `<span class="corrected">${currentInput[i]}</span>`;
                     }else if(currentInput[i] === currentSentence[i]){
                         overlayHTML += `<span class="correct">${currentInput[i]}</span>`;
                     } else {
                         overlayHTML += `<span class="incorrect">${currentInput[i]}</span>`;
-                        errorList.push(i);
+                        if(!errorList.includes(i))
+                        {
+                            errorList.push(i);
+                        }
                         console.log(errorList);
                     }
                 } else {
@@ -304,9 +322,9 @@
                 }
             }
             overlayElement.innerHTML = overlayHTML;
-
+            
             if (currentInput === currentSentence) {
-                sentence += convertToItalic(currentInput);
+                sentence += currentInput;
                 endGame();
             }
         });
