@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type Over Grey Letters Game</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #game-container {
+            text-align: center;
+            width: 80%;
+            max-width: 800px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #typing-area {
+            position: relative;
+            margin: 20px 0;
+            text-align: left;
+        }
+        #sentence, #overlay {
+            font-size: 24px;
+            letter-spacing: 0.1em;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        #sentence {
+            color: #ccc;
+        }
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        #input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            letter-spacing: 0.1em;
+            line-height: 1.5;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            resize: none;
+            overflow: hidden;
+            color: transparent;
+            caret-color: black;
+        }
+        #result {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        #start-button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+        #start-button:hover {
+            background-color: #45a049;
+        }
+        .correct {
+            color: black;
+        }
+        .corrected{
+            color: #ff9900;
+        }
+        .incorrect {
+            color: red;
+        }
+        #copy-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Type it!</h1>
+        <div id="typing-area">
+            <div id="sentence"></div>
+            <div id="overlay"></div>
+            <textarea id="input" rows="3" autocomplete="off" disabled></textarea>
+        </div>
+        <div id="result"></div>
+        <button id="copy-button">Share it!</button>
+    </div>
+
+    <script>
+    // Define the Unicode mappings for italic text
+    const boldScriptMap = {
+    'A': '𝓐', 'B': '𝓑', 'C': '𝓒', 'D': '𝓓', 'E': '𝓔', 'F': '𝓕', 'G': '𝓖', 'H': '𝓗', 'I': '𝓘', 'J': '𝓙',
+    'K': '𝓚', 'L': '𝓛', 'M': '𝓜', 'N': '𝓝', 'O': '𝓞', 'P': '𝓟', 'Q': '𝓠', 'R': '𝓡', 'S': '𝓢', 'T': '𝓣',
+    'U': '𝓤', 'V': '𝓥', 'W': '𝓦', 'X': '𝓧', 'Y': '𝓨', 'Z': '𝓩',
+    'a': '𝓪', 'b': '𝓫', 'c': '𝓬', 'd': '𝓭', 'e': '𝓮', 'f': '𝓯', 'g': '𝓰', 'h': '𝓱', 'i': '𝓲', 'j': '𝓳',
+    'k': '𝓴', 'l': '𝓵', 'm': '𝓶', 'n': '𝓷', 'o': '𝓸', 'p': '𝓹', 'q': '𝓺', 'r': '𝓻', 's': '𝓼', 't': '𝓽',
+    'u': '𝓾', 'v': '𝓿', 'w': '𝔀', 'x': '𝔁', 'y': '𝔂', 'z': '𝔃',
+    '0': '𝟎', '1': '𝟏', '2': '𝟐', '3': '𝟑', '4': '𝟒', '5': '𝟓', '6': '𝟔', '7': '𝟕', '8': '𝟖', '9': '𝟗',
+    ' ': ' ', '.': '․', ',': '‚', '!': '！', '?': '？' // Punctuation and space
+    };
+
+    // Function to convert text to italic Unicode
+    function convertToItalic(text) {
+        return text.split('').map(char => boldScriptMap[char] || char).join('');
+    }
+
+    const sentences = [
+    /*September 11*/ "Autumn leaves whisper\nMemories float on the breeze\nHope rises anew",
+    /*September 12*/ "Coffee steam rises\nMorning paper unfolds slow\nDay's first decisions",
+    /*September 13*/ "Apples ripe on trees\nOrchard buzzes with harvest\nSweet scent fills the air",
+    /*September 14*/ "City streets alive\nBriefcases and high heels rush\nPursuit of dreams starts",
+    /*September 15*/ "Old books dust removed\nPages turn with gentle care\nStories come alive",
+    /*September 16*/ "Warm soup on the stove\nFamily gathers round the bowl\nComfort in each spoon",
+    /*September 17*/ "Rain taps on windows\nCozy blanket wraps around\nTea cup warms the hands",
+    /*September 18*/ "Subway doors closing\nStrangers brush shoulders, then part\nUrban ballet dance",
+    /*September 19*/ "Sunflowers stand tall\nGolden petals face the light\nNature's optimists",
+    /*September 20*/ "Pencils freshly sharpened\nNotebooks crisp with promise\nNew school year begins",
+    /*September 21*/ "Winds whisper softly\nLeaves twirl in a dance of gold\nAutumn’s gentle breath",
+    /*September 22*/ "Harvest moon rises high\nFields of amber stretch below\nNight’s embrace is warm",
+    /*September 23*/ "Bookshelves neatly lined\nQuiet library hums soft\nWisdom waits within",
+    /*September 24*/ "Fog lifts from the lake\nMorning light breaks through the mist\nDay unfolds its wings",
+    /*September 25*/ "Crisp air fills the lungs\nFootsteps crunch on fallen leaves\nAutumn’s path is clear",
+    /*September 26*/ "Chilly morning dew\nSpiders weave their silver threads\nNature’s artistry",
+    /*September 27*/ "Fallen leaves swirl round\nSidewalks painted in warm hues\nAutumn's quiet art",
+    /*September 28*/ "Wood smoke in the air\nFireplace crackles with life\nHome's warm invitation",
+    /*September 29*/ "Dew on cobwebs shine\nMorning sunburns the mist away\nDaybreak’s fragile kiss",
+    /*September 30*/ "Pumpkins on the porch\nTheir faces carved with soft smiles\nAutumn’s festive cheer",
+    /*October 1*/ "Golden light cascades\nAutumn colors blaze bright paths\nSeason's first embrace",
+    /*October 2*/ "Woolen scarves come out\nCool wind tugs at hats and sleeves\nFall’s crisp touch is here",
+    /*October 3*/ "Pine needles scent air\nForest trails call out softly\nWanderer’s delight",
+    /*October 4*/ "Gingerbread aromas\nFill the kitchen, warm and sweet\nAutumn’s spicy breath",
+    /*October 5*/ "Frost on window panes\nFirst hint of winter’s soft touch\nChill’s gentle reminder",
+    /*October 6*/ "Candlelight flickers\nShadows dance on the walls soft\nEvening's quiet grace",
+    /*October 7*/ "Windswept fields of gold\nBirds take flight against the sky\nFreedom’s flight is bold",
+    /*October 8*/ "Crisp apple cider\nWarmth in every single sip\nHarvest’s golden gift",
+    /*October 9*/ "Autumn rain drizzles\nParade of colorful leaves\nNature’s soft farewell",
+    /*October 10*/ "Hot cocoa in hand\nFireplace’s crackling glow\nWarmth against the cold",
+    /*October 11*/ "Clouds drift across skies\nGrey and white in quiet dance\nAutumn’s subtle hues",
+    /*October 12*/ "Gusts through open fields\nScarecrows guard the empty land\nHarvest moon’s soft light",
+    /*October 13*/ "Campfire’s gentle glow\nStories shared in shadowed light\nBonding through the night",
+    /*October 14*/ "Spiced pumpkin muffins\nBaking in the oven’s warmth\nAutumn’s tender gift",
+    /*October 15*/ "Orange and red trees\nNature’s tapestry unfolds\nBeauty in the breeze",
+    /*October 16*/ "Cool air, warm hearth\nChilly nights and sweatered days\nAutumn’s cozy call",
+    /*October 17*/ "Dry leaves crunch underfoot\nWind whispers secrets to trees\nFall’s soft serenade",
+    /*October 18*/ "Vibrant sunsets fade\nInto crisp and starry nights\nAutumn’s quiet end",
+    /*October 19*/ "Overcast skies loom\nHints of snow in the cold breeze\nWinter’s breath draws near",
+    /*October 20*/ "Morning mist hangs low\nCobwebs shimmer in the light\nSpiders’ art displayed",
+    /*October 21*/ "Harvest festival\nPumpkin pie and cider’s cheer\nCelebrating fall",
+    /*October 22*/ "Crispness in the air\nBreath visible in the cold\nAutumn’s sharpness felt",
+    /*October 23*/ "Darkness falls early\nStreet lamps flicker in the dusk\nEvening’s gentle touch",
+    /*October 24*/ "Woodland paths are clear\nLeaves crunch softly as you walk\nAutumn’s golden quilt",
+    /*October 25*/ "Sweaters, mittens, hats\nWarmth against the frosty chill\nWinter’s hint is here",
+    /*October 26*/ "Long shadows stretch out\nSunset paints the sky in hues\nDay’s last gentle kiss",
+    /*October 27*/ "Brisk walk through the park\nColors swirl in the brisk wind\nAutumn’s vivid dance",
+    /*October 28*/ "Breezes carry scents\nOf pine and earthy autumn\nNature’s fragrant touch",
+    /*October 29*/ "Fallen acorns roll\nSquirrels gather for the cold\nWinter’s storehouse grows",
+    /*October 30*/ "Moonlight on still ponds\nReflections dance on the glass\nNight’s serene embrace",
+    /*October 31*/ "Jack-o’-lanterns grin\nCostumes, laughter fill the night\nHalloween’s delight",
+    /*November 1*/ "First frost on the grass\nMorning sparkles in the light\nWinter whispers close",
+    /*November 2*/ "Bonfires crackle loud\nChildren’s laughter fills the night\nAutumn’s warm embrace",
+    /*November 3*/ "Gray clouds cover skies\nChilly breeze stirs fallen leaves\nWinter’s chill arrives",
+    /*November 4*/ "Autumn’s final bow\nLeaves drift down in soft silence\nWinter’s breath draws near",
+    /*November 5*/ "Hot tea warms the soul\nBooks and blankets on the couch\nCozy autumn days",
+    /*November 6*/ "Early dusk settles\nStreet lights flicker on the roads\nEvening’s early fall",
+    /*November 7*/ "Crisp, clear morning air\nBreath forms clouds in the sunlight\nNovember’s cool grace",
+    /*November 8*/ "Bare branches reach high\nAgainst a sky of gray clouds\nWinter’s touch is here",
+    /*November 9*/ "Cider’s warmth in hand\nSpiced scents linger in the air\nAutumn’s sweet farewell",
+    /*November 10*/ "Harvest moon shines bright\nGolden light on frosted fields\nNight’s serene embrace",
+    /*November 11*/ "Veterans remembered\nGratitude in quiet thoughts\nPeace in solemn hearts",
+    /*November 12*/ "Fallen leaves crunch loud\nFootsteps echo on the path\nAutumn’s final notes",
+    /*November 13*/ "Softly falling snow\nBlankets earth in quiet white\nWinter’s gentle touch",
+    /*November 14*/ "Wood smoke fills the air\nChimney’s smoke curls to the sky\nHome’s warmth against cold",
+    /*November 15*/ "Winter’s first chill bites\nBreath visible in the cold\nSeason’s change is here",
+    /*November 16*/ "Dark evenings settle\nStreet lamps glow in the twilight\nWinter’s early dusk",
+    /*November 17*/ "Snowflakes drift slowly\nBlanketing the world in white\nWinter’s silent kiss",
+    /*November 18*/ "Crispness fills the air\nWinter’s touch on fallen leaves\nAutumn’s last goodbye",
+    /*November 19*/ "Cold winds whip the trees\nBranches sway in winter’s grasp\nNature’s harsh embrace",
+    /*November 20*/ "Fireplace’s warm glow\nComfort in the evening’s cold\nHome’s inviting heart",
+    /*November 21*/ "First snowfall arrives\nBlankets earth in winter’s peace\nSilent, soft embrace",
+    /*November 22*/ "Thanksgiving feasts shared\nFamily gathers in thanks\nGratitude and love",
+    /*November 23*/ "Winter days grow short\nLong nights filled with starry skies\nSeason’s calm retreat",
+    /*November 24*/ "Pine trees stand so tall\nSnow-laden branches bend low\nWinter’s evergreen",
+    /*November 25*/ "Quiet snowfall drifts\nSoftly landing on the ground\nWinter’s silent grace",
+    /*November 26*/ "Candlelight flickers\nShadows dance on the walls soft\nEvening’s calm embrace",
+    /*November 27*/ "Early frost sparkles\nOn the edges of the grass\nWinter’s touch is near",
+    /*November 28*/ "A crisp, cold breeze blows\nLeaves rustle in the winter’s chill\nAutumn bids goodbye",
+    /*November 29*/ "Snowflakes softly fall\nBlanket the world in winter’s peace\nColdness gently wraps",
+    /*November 30*/ "Bare trees reach to sky\nWinter’s chill settles in deep\nNature’s quiet rest"
+    ];
+
+        const startDate = new Date('2024-09-11'); // Start date (modify if needed)
+        const today = new Date();    // Today’s date
+        // Calculate the number of days between the two dates
+        const elapsedDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+        const todaysSentence = elapsedDays % sentences.length;
+
+        let startTime, endTime;
+        const sentenceElement = document.getElementById('sentence');
+        const overlayElement = document.getElementById('overlay');
+        const inputElement = document.getElementById('input');
+        const resultElement = document.getElementById('result');
+        const copyButton = document.getElementById('copy-button');
+
+        let errorList = [];
+        let timingList = [];
+        let sentence = `Typed it!: \n`;
+        function getRandomSentence() {
+            return sentences[Math.floor(Math.random() * sentences.length)];
+        }
+
+        function startGame() {
+            sentenceElement.textContent = sentences[todaysSentence];
+            overlayElement.innerHTML = '';
+            inputElement.value = '';
+            inputElement.disabled = false;
+            inputElement.focus();
+            startTime = new Date().getTime();
+            copyButton.style.display = 'none';
+            resultElement.textContent = '';
+        }
+
+        function endGame() {
+            endTime = new Date().getTime();
+            const timeElapsed = (endTime - startTime) / 1000; // in seconds
+            const wordsTyped = sentenceElement.textContent.split(' ').length;
+            const wpm = Math.round((wordsTyped / timeElapsed) * 60);
+            
+            resultElement.textContent = `Your typing speed: ${wpm} WPM`;
+            sentence += `\n🎉${wpm} WPM🎉`
+            sentence += `\nTypeIt.com`
+            copyButton.style.display = 'block';
+            inputElement.disabled = true;
+        }
+
+        inputElement.addEventListener('input', () => {
+            const currentInput = inputElement.value;
+            const currentSentence = sentenceElement.textContent;
+            
+            if(currentSentence.length == 0)
+            {
+                startGame();
+            }
+            nowTime = new Date().getTime();
+            const duration = (nowTime - startTime) / 1000; // in seconds
+            timingList.push(duration);
+            let overlayHTML = '';
+            if(currentInput.length + 1 < sentenceElement.textContent.length)
+            {
+                if((sentenceElement.textContent[currentInput.length] === "\n")
+                    && (currentInput[currentInput.length-1] == currentSentence[currentInput.length-1])
+                )
+                {
+                    inputElement.value += "\n";
+                }
+            }
+
+            for (let i = 0; i < currentSentence.length; i++) {
+                if (i < currentInput.length) {
+                    if (currentInput[i] === currentSentence[i] && errorList.includes(i)) {
+                        console.log(i,errorList);
+                        overlayHTML += `<span class="corrected">${currentInput[i]}</span>`;
+                    }else if(currentInput[i] === currentSentence[i]){
+                        overlayHTML += `<span class="correct">${currentInput[i]}</span>`;
+                    } else {
+                        overlayHTML += `<span class="incorrect">${currentInput[i]}</span>`;
+                        errorList.push(i);
+                        console.log(errorList);
+                    }
+                } else {
+                    overlayHTML += `<span id="sentence">${currentSentence[i]}</span>`;
+                }
+            }
+            overlayElement.innerHTML = overlayHTML;
+
+            if (currentInput === currentSentence) {
+                sentence += convertToItalic(currentInput);
+                endGame();
+            }
+        });
+
+        document.getElementById('copy-button').addEventListener('click', async function() {
+            const textArea = document.getElementById('text-to-copy');
+            try {
+                // Copy text using Clipboard API
+                await navigator.clipboard.writeText(sentence);
+                alert(sentence);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                alert('Failed to copy text. Please try again.');
+            }
+        });
+
+        startGame();
+
+    </script>
+</body>
+</html>
