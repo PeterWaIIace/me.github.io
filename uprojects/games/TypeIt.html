@@ -99,6 +99,12 @@
             cursor: pointer;
             font-family: 'Courier New', monospace;
         }
+        #copy-button:active { 
+            transform: scale(0.98); 
+            /* Scaling button to 0.98 to its original size */ 
+            box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24); 
+            /* Lowering the shadow */ 
+        } 
     </style>
 
     <!-- Google tag (gtag.js) -->
@@ -121,6 +127,7 @@
             <textarea id="input" rows="3" autocomplete="off" disabled></textarea>
         </div>
         <div id="result"></div>
+        <div id="copied"></div>
         <div>
             <button id="copy-button">Share it!</button>
         </div>
@@ -246,6 +253,7 @@
         const overlayElement = document.getElementById('overlay');
         const inputElement = document.getElementById('input');
         const resultElement = document.getElementById('result');
+        const copiedIndication = document.getElementById('copied');
         const copyButton = document.getElementById('copy-button');
 
         let errorList = [];
@@ -334,6 +342,7 @@
             try {
                 // Copy text using Clipboard API
                 await navigator.clipboard.writeText(sentence);
+                copiedIndication.textContent = "Copied!";
             } catch (err) {
                 console.error('Failed to copy text: ', err);
             }
