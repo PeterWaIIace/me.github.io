@@ -334,10 +334,8 @@
             try {
                 // Copy text using Clipboard API
                 await navigator.clipboard.writeText(sentence);
-                alert(sentence);
             } catch (err) {
                 console.error('Failed to copy text: ', err);
-                alert('Failed to copy text. Please try again.');
             }
         });
 
