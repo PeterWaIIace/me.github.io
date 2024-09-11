@@ -250,6 +250,21 @@
         const todaysSentence = elapsedDays % sentences.length;
 
         let startTime, endTime;
+        const daysOfTheWeek = ["Sun","Mon","Tue","Wed","Thur","Fri","Sat"];
+        const monthAbbreviations = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec"
+        ];
         const dateElement = document.getElementById('date');
         const sentenceElement = document.getElementById('sentence');
         const overlayElement = document.getElementById('overlay');
@@ -258,10 +273,10 @@
         const copiedIndication = document.getElementById('copied');
         const copyButton = document.getElementById('copy-button');
 
-        dateElement.innerText = `Haiku for ${today.getDay()}.${today.getMonth()+1}.${today.getFullYear()}`;
+        dateElement.innerText = `Haiku for ${daysOfTheWeek[today.getDay()]} ${monthAbbreviations[today.getMonth()]} ${today.getFullYear()}`;
         let errorList = [];
         let timingList = [];
-        let sentence = `${today.getDay()}.${today.getMonth()+1}.${today.getFullYear()}\n\n`;
+        let sentence = `${daysOfTheWeek[today.getDay()]}.${monthAbbreviations[today.getMonth()]}.${today.getFullYear()}\n\n`;
         function getRandomSentence() {
             return sentences[Math.floor(Math.random() * sentences.length)];
         }
