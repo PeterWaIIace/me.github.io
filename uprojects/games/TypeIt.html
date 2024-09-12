@@ -246,9 +246,9 @@
         const startDate = new Date('2024-09-11'); // Start date (modify if needed)
         const today = new Date();    // Today’s date
         // Calculate the number of days between the two dates
-        const elapsedDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+        const elapsedDays = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
         const todaysSentence = elapsedDays % sentences.length;
-
+        
         let startTime, endTime;
         const daysOfTheWeek = ["Sun","Mon","Tue","Wed","Thur","Fri","Sat"];
         const monthAbbreviations = [
@@ -300,7 +300,7 @@
             
             resultElement.textContent = `Your typing speed: ${wpm} WPM\nwith ${errorList.length} mistakes`;
             sentence += `\n🎉${wpm} WPM🎉 and 😬${errorList.length} mistakes😬`
-            sentence += `\nTypeIt!:https://shorturl.at/iZdDa`
+            sentence += `\nTypeIt!: https://peterwaiiace.github.io/me.github.io/uprojects/games/TypeIt.html`
             sentence += `\n#TypeIt #haiku #haikuchallenge`
             copyButton.style.display = 'block';
             inputElement.disabled = true;
