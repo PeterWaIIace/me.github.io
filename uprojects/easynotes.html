@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Take easy notes with this simple PWA">
+    <title>Interactive Canvas</title>
+    <!-- Include stylesheet -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        canvas {
+            border: 1px solid #ccc;
+            background: #fff;
+        }
+
+        .rect {
+            position: absolute;
+            /* border: 1px solid #888; */
+            background: transparent;
+            height: 400px;
+            width: 400px;
+            /* box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); */
+            /* padding: 10px; */
+            resize: both;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+
+        .focus {
+            position: absolute;
+            border: 1px solid #888;
+            /* background: #fafafa; */
+            height: 400px;
+            width: 400px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            /* padding: 10px; */
+            resize: both;
+            overflow: hidden;
+        }
+
+        .rect-title {
+            margin: 3px;
+            font-size: 14px;
+            max-height: 20px;
+            font-weight: bold;
+            cursor: move;
+            /* margin-bottom: 5px; */
+        }
+
+        .ql-container.ql-snow {
+            background-color: transparent;
+            border: none;
+            outline: none;
+        }
+        
+        textarea::-webkit-resizer,
+        .ql-container::-webkit-resizer {
+            display: none; /* Hide the resize handle */
+            background: transparent;
+        }
+
+        .rect-title textarea{
+            background: transparent !important;
+            font-size: 14px;
+            max-height: 20px;
+            font-weight: bold;
+            cursor: move;
+            border: none; /* Removes the border around the textarea */
+            outline: none; /* Removes the outline when focused */
+            border: 0 none;
+            /* margin-bottom: 5px; */
+        }
+
+        .rect textarea {
+            background: transparent !important;
+            width: 100%;
+            height: 100%;
+            border: none;
+            resize: none;
+            box-sizing: border-box;
+            caret-color: transparent;
+        }
+
+        #custom-toolbar {
+            position: fixed; /* Fix it at the top */
+            top: 0; /* Stick to the top edge */
+            left: 0; /* Align with the left edge */
+            width: 400px; /* Full width */
+            height: 25px; /* Full width */
+            left: 50%; /* Center it horizontally */
+            transform: translateX(-50%); /* Offset it by half its width */
+            border-radius: 15px;
+            background-color: #f4f4f4; /* Light background for visibility */
+            padding: 10px; /* Add some padding */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional shadow for better appearance */
+            z-index: 1000; /* Ensure it stays above other elements */
+            display: flex; /* Arrange buttons in a row */
+            gap: 10px; /* Add spacing between buttons */
+        }
+
+        .rm {
+            border: 2px solid #ff0000;
+            background-color: #ff0000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional shadow for better appearance */
+            border-radius: 10px;
+            width: 25px;
+            height: 25px;
+            font-size: small;
+            color: #fff;
+            filter: brightness(0.9);
+        }
+
+        .rm:hover {
+            filter: brightness(1.0);
+            color: #fff;
+        }
+
+        .rm:active {
+            filter: brightness(0.8);
+            color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="custom-toolbar">
+        <button class="rm" onclick="remove();">
+            <i class="fa-solid fa-trash"></i>
+        </button>
+    </div>
+
+    <div style="width: 100vw; height: 100vh;">
+        <canvas id="canvas" style="width: 100vw; height:100vh"></canvas>
+    </div>
+
+    <!-- Include the Quill library -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+
+    <!-- Initialize Quill editor -->
+    <script>
+
+    </script>
+    <script>
+        const canvas = document.getElementById("canvas");
+        const rectDataKey = "canvasRectangles";
+        const ctx = canvas.getContext("2d");
+        let draggingRect = null;
+        let offsetX = 0;
+        let offsetY = 0;
+        let active_editor_handle = null;
+        let active_object_handle = null;
+        const rects = JSON.parse(localStorage.getItem(rectDataKey)) || [];
+
+        function saveRects() {
+            localStorage.setItem(rectDataKey, JSON.stringify(rects));
+        }
+
+        function remove(){
+            console.log(active_editor_handle);
+            if(active_editor_handle != null)
+            {
+                let index = 0;
+                const removedValue = rects.find(rect => {
+                    if(active_object_handle.id == rect.id)
+                    {
+                        rects.splice(index,1);
+                        return true;
+                    }
+                    index++;
+                });
+                
+                active_editor_handle.remove();
+                active_editor_handle = null;
+                saveRects();
+            }
+        }
+
+        function createRect(x, y, title = "Title", content = "", id = 0, restored = false) {
+            console.log(x, y)
+            const rect = document.createElement("div");
+            rect.id = "editor";
+            rect.className = "rect";
+            rect.style.left = `${x}px`;
+            rect.style.top = `${y}px`;
+
+            const titleDiv = document.createElement("textarea");
+            titleDiv.className = "rect-title";
+            titleDiv.textContent = title;
+            rect.appendChild(titleDiv);
+
+            // const textArea = document.createElement("textarea");
+            // textArea.value = content;
+            // rect.appendChild(textArea);
+
+            const editorContainer = document.createElement("div");
+            editorContainer.className = "quill-editor";
+            rect.appendChild(editorContainer);
+
+            document.body.appendChild(rect);
+
+            // Dragging functionality
+            titleDiv.addEventListener("mousedown", (e) => {
+                draggingRect = rect;
+                offsetX = e.clientX - rect.offsetLeft;
+                offsetY = e.clientY - rect.offsetTop;
+            });
+
+            // Initialize Quill editor
+            const quill = new Quill(editorContainer, {
+                theme: "snow",
+                placeholder: "Type something...",
+                modules: {
+                }
+            });
+            // Set initial content
+            quill.root.innerHTML = content;
+            const toolbar = quill.getModule('toolbar').container;
+            toolbar.style.display = 'none';
+            // Save to rects array
+            if(id == 0)
+            {
+                id = crypto.randomUUID();
+            }
+            const rectObj = { x, y, title, content, id };
+            if(!restored)
+            {
+                rects.push(rectObj);
+                saveRects();
+            }
+
+            quill.on('selection-change', (range) => {
+                console.log("here");
+                const toolbar = quill.getModule('toolbar').container;
+                toolbar.style.display = range ? 'block' : 'none';
+                if(toolbar.style.display == 'block')
+                {
+                    console.log(rect);
+                    active_editor_handle = rect;
+                    active_object_handle = rectObj;
+                    rect.classList.add("focus");
+                    rect.style.zIndex = 100;
+                    console.log(rect);
+                }
+                else
+                {
+                    rect.classList.remove("focus");
+                    rect.style.zIndex = 0;
+                }
+            });
+
+            return rect;
+        }
+
+        document.addEventListener("mousemove", (e) => {
+            if (draggingRect) {
+                const rectObj = rects.find(
+                    (r) =>
+                        r.x === parseInt(draggingRect.style.left) &&
+                        r.y === parseInt(draggingRect.style.top)
+                );
+
+                if (rectObj) {
+                    const newX = e.clientX - offsetX;
+                    const newY = e.clientY - offsetY;
+
+                    draggingRect.style.left = `${newX}px`;
+                    draggingRect.style.top = `${newY}px`;
+
+                    rectObj.x = newX;
+                    rectObj.y = newY;
+
+                    saveRects();
+                }
+            }
+        });
+
+        document.addEventListener("mouseup", () => {
+            draggingRect = null;
+        });
+
+        canvas.addEventListener("click", (e) => {
+            if(active_object_handle == null)
+            {
+                const rect = createRect(e.clientX, e.clientY);
+            }
+            else
+            {
+                active_object_handle = null;
+            }
+        });
+
+        // Load rectangles on page load
+        rects.forEach((data) => {
+            console.log(data)
+            createRect(data.x, data.y, data.title, data.content, data.id, true);
+        });
+
+        // Add an event listener for the Delete key (key code for Delete is 46)
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Delete') {
+                // Trigger the button's click event
+                remove();
+            }
+        });
+
+        // Enable drag-and-drop on the drop area
+        canvas.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Allow dropping by preventing default handling
+        });
+
+        canvas.addEventListener('dragleave', () => {
+        });
+
+        canvas.addEventListener('drop', (e) => {
+            e.preventDefault(); // Prevent default handling of the drop event
+
+        });
+
+    </script>
+</body>
+</html>
