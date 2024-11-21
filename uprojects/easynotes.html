@@ -8,6 +8,18 @@
     <!-- Include stylesheet -->
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5B9TWX0GYP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-5B9TWX0GYP');
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -132,6 +144,37 @@
             color: #fff;
         }
 
+        .btn {
+            border: 2px solid #5d00ff;
+            background-color: #5d00ff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional shadow for better appearance */
+            border-radius: 10px;
+            width: 25px;
+            height: 25px;
+            font-size: small;
+            color: #fff;
+            filter: brightness(0.9);
+        }
+
+        .btn:hover {
+            filter: brightness(1.0);
+            color: #fff;
+        }
+
+        .btn:active {
+            filter: brightness(0.8);
+            color: #fff;
+        }
+
+        @font-face {
+            font-family: 'my-custom-font';
+            src: url('path-to-font.woff2') format('woff2');
+        }
+
+        .ql-font-my-custom-font {
+            font-family: 'my-custom-font', sans-serif;
+        }
+
     </style>
 </head>
 <body>
@@ -139,9 +182,12 @@
         <button class="rm" onclick="remove();">
             <i class="fa-solid fa-trash"></i>
         </button>
+        <button class="btn" onclick="takeScreenshot();">
+            <i class="fa-solid fa-camera"></i>
+        </button>
     </div>
 
-    <div style="width: 100vw; height: 100vh;">
+    <div id='canvas_container' style="width: 100vw; height: 100vh;">
         <canvas id="canvas" style="width: 100vw; height:100vh"></canvas>
     </div>
 
@@ -217,7 +263,7 @@
             editorContainer.className = "quill-editor";
             rect.appendChild(editorContainer);
 
-            document.body.appendChild(rect);
+            document.getElementById('canvas_container').appendChild(rect);
 
             // Dragging functionality
             titleDiv.addEventListener("mousedown", (e) => {
@@ -227,10 +273,20 @@
             });
 
             // Initialize Quill editor
+            var toolbarOptions = [
+                [{ 'font': ['sans-serif', 'serif', 'monospace', 'my-custom-font'] }],
+                [{ 'header': '1' }, { 'header': '2' }, 'bold', 'italic', 'underline'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['link'],
+                [{ 'align': null}, { 'align': 'center' }, { 'align': 'right' }, { 'align': 'justify' }],
+                ['blockquote', 'code-block']
+            ];
+
             const quill = new Quill(editorContainer, {
                 theme: "snow",
                 placeholder: "Type something...",
                 modules: {
+                    toolbar: toolbarOptions
                 }
             });
             // Set initial content
@@ -337,6 +393,31 @@
 
         });
 
+        function takeScreenshot() {
+            // Capture the whole page
+            let ret = html2canvas(document.getElementById('canvas_container'))
+            .then(canvas => {
+                // Convert the canvas to an image (data URL)
+                var img = canvas.toDataURL("image/png");
+
+                // Create an anchor tag to trigger the download
+                var downloadLink = document.createElement("a");
+                downloadLink.href = img;
+                downloadLink.download = "screenshot.png"; // Filename for the download
+
+                // Append the anchor to the body (not visible on screen)
+                document.body.appendChild(downloadLink);
+
+                // Trigger the click event to download the image
+                downloadLink.click();
+
+                // Clean up by removing the anchor element
+                document.body.removeChild(downloadLink);
+            });
+        }
+
+        // Call the function to take the screenshot
+        // takeScreenshot();
     </script>
 </body>
 </html>
