@@ -166,6 +166,54 @@
             color: #fff;
         }
 
+        .disabled-btn {
+            border: 2px solid #979797;
+            background-color: #979797;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional shadow for better appearance */
+            border-radius: 10px;
+            width: 25px;
+            height: 25px;
+            font-size: small;
+            color: #fff;
+            filter: brightness(0.9);
+        }
+
+        #side-panel{
+            position: fixed; /* Fix it at the top */
+            top: 0; /* Stick to the top edge */
+            left: 0; /* Align with the left edge */
+            width: 40px; /* Full width */
+            height: 300px; /* Full width */
+            left: 0%; /* Center it horizontally */
+            top: 50%; /* Center it horizontally */
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            transform: translateY(-50%); /* Offset it by half its width */
+            border-radius: 15px;
+            background-color: #f4f4f4; /* Light background for visibility */
+            padding: 10px; /* Add some padding */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional shadow for better appearance */
+            z-index: 1000; /* Ensure it stays above other elements */
+            display: flex; /* Arrange buttons in a row */
+            gap: 10px; /* Add spacing between buttons */
+        }
+
+        .panel-item {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            height: 20px;
+            background-color: #444;
+            text-align: center;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .panel-item:hover {
+            background-color: #555;
+        }
+
+
         @font-face {
             font-family: 'my-custom-font';
             src: url('path-to-font.woff2') format('woff2');
@@ -185,7 +233,29 @@
         <button class="btn" onclick="takeScreenshot();">
             <i class="fa-solid fa-camera"></i>
         </button>
+        <button class="disabled-btn" onclick="">
+            <i class="fa-solid fa-arrow-up"></i>
+        </button>
+        <button class="disabled-btn" onclick="">
+            <i class="fa-solid fa-file"></i>
+        </button>
+        <button class="disabled-btn" onclick="">
+            <i class="fa-solid fa-pen-fancy"></i>
+        </button>
+        <button class="disabled-btn" onclick="">
+            <i class="fa-brands fa-google"></i>
+        </button>
     </div>
+
+    <div id="side-panel">
+        <a onclick="switchScope('EasyNotes')" class="panel-item">1</a>
+        <a onclick="switchScope('2')" class="panel-item">2</a>
+        <a onclick="switchScope('3')" class="panel-item">3</a>
+        <a onclick="switchScope('4')" class="panel-item">4</a>
+        <a onclick="switchScope('5')" class="panel-item">5</a>
+        <a onclick="switchScope('6')" class="panel-item">6</a>
+    </div>
+
 
     <div id='canvas_container' style="width: 100vw; height: 100vh;">
         <canvas id="canvas" style="width: 100vw; height:100vh"></canvas>
@@ -209,15 +279,46 @@
     </script>
     <script>
         const canvas = document.getElementById("canvas");
-        const rectDataKey = "canvasRectangles";
         const ctx = canvas.getContext("2d");
+        
+        const currentScope  = "currentCanvas";
+        const storedScopes  = "scopes";
+        const scopes = JSON.parse(localStorage.getItem(storedScopes)) || [];
+        const scope = JSON.parse(localStorage.getItem(currentScope)) || "EasyNotes";
+        if( scopes.length < 1 ){
+            scopes.push(scope);
+        }
+
+        function switchScope(scopeName)
+        {
+            localStorage.setItem(currentScope, JSON.stringify(scopeName));
+            location.reload();
+        }
+
+        function rmScope(scopeName)
+        {
+            let index = 0;
+            const removedValue = scopes.find(scope => {
+                if(scopeName == scope)
+                {
+                    scopes.splice(index,1);
+                    console.log(index,1);
+                    return true;
+                }
+                index++;
+            });
+            localStorage.setItem(storedScopes, JSON.stringify(scopes));
+        }
+        
+        // assing rectDataKey to scope
+        const rectDataKey = scope;
         let draggingRect = null;
         let offsetX = 0;
         let offsetY = 0;
         let active_editor_handle = null;
         let active_object_handle = null;
         const rects = JSON.parse(localStorage.getItem(rectDataKey)) || [];
-        console.log(rects);
+
         if(rects.length < 1){
             rects.push({x : 341, y : 160, title : "Welcome to easy notes", content : "<p>This is simple app allowing you to note anything and store it in your browser (if you launch again your notes will stay here).</p><p><br></p>", id : 0xDEADBEEF});
             rects.push({x : 333, y : 252, title : "How to", content : '<ol><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>Press this text to edit it.</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>Press anywhere else to create new text window</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>You can drag text windows</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>You can convert page to png with camera button</li></ol>', id : 0xB4B31});
@@ -245,7 +346,7 @@
                 active_editor_handle.remove();
                 active_editor_handle = null;
                 console.log(rects);
-                saveRects();
+                // saveRects();
             }
         }
 
@@ -305,25 +406,52 @@
             {
                 id = crypto.randomUUID();
             }
-            const rectObj = { x, y, title, content, id };
+
+            let rectObj = {'x':x, 'y':y, 'title':title, 'content':content, 'id':id };
             if(!restored)
             {
                 rects.push(rectObj);
-                saveRects();
             }
+            else
+            {
+                // remove element from the rects list to 
+                // add it again with correct reference
+                let i = 0;
+                rectObj = rects.find(rect => {
+                    if(rectObj.id == rect.id)
+                    {
+                        return true;
+                    }
+                    i++;
+                });
+            }
+            saveRects();
+
+            // Update title on input change
+            titleDiv.addEventListener("input", () => {
+                rectObj.title = titleDiv.value;
+                saveRects(); // Persist changes
+            });
+
+            // Update content on Quill editor changes
+            quill.on("text-change", () => {
+                rectObj.content = quill.root.innerHTML; // Update content in rectObj
+                // console.log(rectObj);
+                // console.log(rects);
+                saveRects(); // Persist changes
+            });
+
 
             quill.on('selection-change', (range) => {
-                console.log("here");
                 const toolbar = quill.getModule('toolbar').container;
                 toolbar.style.display = range ? 'block' : 'none';
                 if(toolbar.style.display == 'block')
                 {
-                    console.log(rect);
                     active_editor_handle = rect;
                     active_object_handle = rectObj;
                     rect.classList.add("focus");
                     rect.style.zIndex = 100;
-                    console.log(rect);
+                    saveRects();
                 }
                 else
                 {
@@ -375,7 +503,6 @@
 
         // Load rectangles on page load
         rects.forEach((data) => {
-            console.log(data)
             createRect(data.x, data.y, data.title, data.content, data.id, true);
         });
 
@@ -385,6 +512,7 @@
                 // Trigger the button's click event
                 remove();
             }
+            saveRects();
         });
 
         // Enable drag-and-drop on the drop area
