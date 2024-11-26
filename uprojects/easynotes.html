@@ -39,12 +39,9 @@
 
         .rect {
             position: absolute;
-            /* border: 1px solid #888; */
             background: transparent;
             height: 400px;
             width: 400px;
-            /* box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); */
-            /* padding: 10px; */
             resize: both;
             overflow: hidden;
             border-radius: 15px;
@@ -69,6 +66,14 @@
             font-weight: bold;
             cursor: move;
             /* margin-bottom: 5px; */
+        }
+
+        .rect img {
+            /* margin: 20px; */
+            width: 100%; /* Make image fit div width */
+            height: 100%; /* Make image fit div height */
+            object-fit: cover; /* Ensures image scales correctly */
+            cursor: move;
         }
 
         .ql-container.ql-snow {
@@ -318,10 +323,10 @@
         let active_editor_handle = null;
         let active_object_handle = null;
         const rects = JSON.parse(localStorage.getItem(rectDataKey)) || [];
-
+        
         if(rects.length < 1){
-            rects.push({x : 341, y : 160, title : "Welcome to easy notes", content : "<p>This is simple app allowing you to note anything and store it in your browser (if you launch again your notes will stay here).</p><p><br></p>", id : 0xDEADBEEF});
-            rects.push({x : 333, y : 252, title : "How to", content : '<ol><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>Press this text to edit it.</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>Press anywhere else to create new text window</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>You can drag text windows</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>You can convert page to png with camera button</li></ol>', id : 0xB4B31});
+            rects.push({x : 341, y : 160, title : "Welcome to easy notes", content : "<p>This is simple app allowing you to note anything and store it in your browser (if you launch again your notes will stay here).</p><p><br></p>", id : 0xDEADBEEF, type:"text"});
+            rects.push({x : 333, y : 252, title : "How to", content : '<ol><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>Press this text to edit it.</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>Press anywhere else to create new text window</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>You can drag text windows</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>You can convert page to png with camera button</li></ol>', id : 0xB4B31, type:"text"});
         }
         
         function saveRects() {
@@ -363,10 +368,6 @@
             titleDiv.textContent = title;
             rect.appendChild(titleDiv);
 
-            // const textArea = document.createElement("textarea");
-            // textArea.value = content;
-            // rect.appendChild(textArea);
-
             const editorContainer = document.createElement("div");
             editorContainer.className = "quill-editor";
             rect.appendChild(editorContainer);
@@ -407,7 +408,7 @@
                 id = crypto.randomUUID();
             }
 
-            let rectObj = {'x':x, 'y':y, 'title':title, 'content':content, 'id':id };
+            let rectObj = {'x':x, 'y':y, 'title':title, 'content':content, 'id':id, type:'text'};
             if(!restored)
             {
                 rects.push(rectObj);
@@ -463,6 +464,86 @@
             return rect;
         }
 
+        // event.target.result
+        function createImg(x, y, title, content, id=0, restored=false){
+            if(id == 0)
+            {
+                id = crypto.randomUUID();
+            }
+
+            let rectObj = {'x':x, 'y':y, 'title':title, 'content': content, 'id':id, type:'img'};
+
+            const img = new Image();
+            img.onload = () => {
+                const rect = document.createElement('div');
+                rect.className = 'rect';
+                rect.style.left = `${x}px`;
+                rect.style.top = `${y}px`;
+
+                if(!restored)
+                {
+                    rects.push(rectObj);
+                }
+                else
+                {
+                    let i = 0;
+                    rectObj = rects.find(rect => {
+                        if(rectObj.id == rect.id)
+                        {
+                            return true;
+                        }
+                        i++;
+                    });
+                }
+                // Dragging functionality
+                const inside_rect = document.createElement('div');
+                inside_rect.addEventListener("mousedown", (e) => {
+                    e.preventDefault();
+                    draggingRect = rect;
+                    offsetX = e.clientX - rect.offsetLeft;
+                    offsetY = e.clientY - rect.offsetTop;
+                    active_editor_handle = rect;
+                    active_object_handle = rectObj;
+                });
+
+                const img = document.createElement('img');
+                img.src = rectObj.content;
+
+                inside_rect.appendChild(img);
+                rect.appendChild(inside_rect);
+                document.getElementById('canvas_container').appendChild(rect);
+            };
+            img.src = rectObj.content;
+        }
+
+        // Enable drag-and-drop on the drop area
+        canvas.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Allow dropping by preventing default handling
+        });
+
+        canvas.addEventListener('dragleave', () => {
+        });
+
+        canvas.addEventListener('drop', (e) => {
+            e.preventDefault(); // Prevent default handling of the drop event
+
+            const file = e.dataTransfer.files[0];
+
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    createImg(
+                        e.clientX,
+                        e.clientY, 
+                        "Img", 
+                        event.target.result);
+                };
+
+                reader.readAsDataURL(file);
+            }
+
+        });
+
         document.addEventListener("mousemove", (e) => {
             if (draggingRect) {
                 const rectObj = rects.find(
@@ -483,8 +564,17 @@
 
                     saveRects();
                 }
+                else
+                {
+                    const newX = e.clientX - offsetX;
+                    const newY = e.clientY - offsetY;
+
+                    draggingRect.style.left = `${newX}px`;
+                    draggingRect.style.top = `${newY}px`;
+                }
             }
         });
+
 
         document.addEventListener("mouseup", () => {
             draggingRect = null;
@@ -503,7 +593,17 @@
 
         // Load rectangles on page load
         rects.forEach((data) => {
-            createRect(data.x, data.y, data.title, data.content, data.id, true);
+            if(data.type == 'text')
+            {
+                createRect(data.x, data.y, data.title, data.content, data.id, true);
+            }
+            else if(data.type == 'img')
+            {
+                createImg(data.x, data.y, data.title, data.content, data.id, true);
+            }
+            else{
+                console.log("Not found: ",data.type);
+            }
         });
 
         // Add an event listener for the Delete key (key code for Delete is 46)
@@ -515,18 +615,6 @@
             saveRects();
         });
 
-        // Enable drag-and-drop on the drop area
-        canvas.addEventListener('dragover', (e) => {
-            e.preventDefault(); // Allow dropping by preventing default handling
-        });
-
-        canvas.addEventListener('dragleave', () => {
-        });
-
-        canvas.addEventListener('drop', (e) => {
-            e.preventDefault(); // Prevent default handling of the drop event
-
-        });
 
         function takeScreenshot() {
             // Capture the whole page
