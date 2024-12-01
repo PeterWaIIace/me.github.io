@@ -325,7 +325,7 @@
         const rects = JSON.parse(localStorage.getItem(rectDataKey)) || [];
         
         if(rects.length < 1){
-            rects.push({x : 341, y : 160, title : "Welcome to easy notes", content : "<p>This is simple app allowing you to note anything and store it in your browser (if you launch again your notes will stay here).</p><p><br></p>", id : 0xDEADBEEF, type:"text"});
+            rects.push({x : 341, y : 160, title : "Welcome to easy notes", content : "<p><a href='https://scribenotes.ink/'>EasyNotes was changed to ScribeNotes.ink!</a>This is simple app allowing you to note anything and store it in your browser (if you launch again your notes will stay here).</p><p><br></p>", id : 0xDEADBEEF, type:"text"});
             rects.push({x : 333, y : 252, title : "How to", content : '<ol><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>Press this text to edit it.</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>Press anywhere else to create new text window</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>You can drag text windows</li><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>You can convert page to png with camera button</li></ol>', id : 0xB4B31, type:"text"});
         }
         
