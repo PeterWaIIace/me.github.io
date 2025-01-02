@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tax Comparison Plot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .tooltip {
+            position: absolute;
+            background: white;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            pointer-events: none;
+            display: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        canvas {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .legend {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+    </style>
+    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+    <script>
+    kofiWidgetOverlay.draw('peterwallace', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': 'Support me',
+        'floating-chat.donateButton.background-color': '#00b9fe',
+        'floating-chat.donateButton.text-color': '#fff'
+    });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Analizator podatkowy na rok 2025</h1>
+        <canvas id="taxPlot" width="1000" height="700"></canvas>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #8884d8;"></div>
+                <span>Liniowy</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #82ca9d;"></div>
+                <span>Ryczałt</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ffc658;"></div>
+                <span>Skala</span>
+            </div>
+        </div>
+        <div id="tooltip" class="tooltip"></div>
+    </div>
+
+    <script>
+        // Tax calculation functions
+        function ryczalt_tax(income, income_tax) {
+            var zus_zdrowotna = 699.11;
+            if(income * 12 > 300000) {
+                zus_zdrowotna = 1128.48;
+            } else if(income * 12 < 60000) {
+                zus_zdrowotna = 419.46;
+            }
+            var zus_wypadkowe = 86.90;
+            var zus_fundusz_pracy = 127.49;
+            var zus_chorobowa = 127.49;
+            var zus_renta = 416.3;
+            var zus_emerytura = 1015.78;
+            var zus_tax = zus_emerytura + zus_renta + zus_chorobowa + zus_wypadkowe + zus_fundusz_pracy;
+            var income_tax_ret = (income - (zus_tax + zus_zdrowotna)) * income_tax;
+            return zus_zdrowotna + zus_tax + income_tax_ret;
+        }
+
+        function liniowy_tax(income, costs) {
+            var zus_wypadkowe = 86.90;
+            var zus_fundusz_pracy = 127.49;
+            var zus_chorobowa = 127.49;
+            var zus_renta = 416.3;
+            var zus_emerytura = 1015.78;
+            var zus_tax = zus_emerytura + zus_renta + zus_chorobowa + zus_wypadkowe + zus_fundusz_pracy;
+            var zus_zdrowotna = 0.049 * (income - (costs + zus_tax));
+            var income_tax_ret = (income - (costs + zus_zdrowotna + zus_tax)) * 0.19;
+            return income_tax_ret + zus_zdrowotna + zus_tax;
+        }
+
+        function skala_tax(income, costs) {
+            var zus_wypadkowe = 86.90;
+            var zus_fundusz_pracy = 127.49;
+            var zus_chorobowa = 127.49;
+            var zus_renta = 416.3;
+            var zus_emerytura = 1015.78;
+            var zus_tax = zus_emerytura + zus_renta + zus_chorobowa + zus_wypadkowe + zus_fundusz_pracy;
+            var zus_zdrowotna = 0.09 * (income - costs - zus_tax);
+
+            var avg_income_tax_month = 0;
+            var income_year = (income - (costs + zus_tax)) * 12;
+            if(income_year <= 120000) {
+                avg_income_tax_month = (income_year - 30000) * 0.12;
+                avg_income_tax_month = avg_income_tax_month / 12;
+            } else {
+                avg_income_tax_month = 10800 + (income_year - 120000) * 0.32;
+                avg_income_tax_month = avg_income_tax_month / 12;
+            }
+            var income_tax_ret = avg_income_tax_month;
+            return zus_zdrowotna + zus_tax + income_tax_ret;
+        }
+
+        function compare_tax(liniowy, ryczalt, skala) {
+            if(liniowy > ryczalt && liniowy > skala) {
+                return "L";
+            } else if(liniowy > ryczalt && liniowy < skala) {
+                return "S";
+            } else if(liniowy < ryczalt && liniowy > skala) {
+                return "R";
+            } else {
+                if(skala > ryczalt) {
+                    return "S";
+                } else {
+                    return "R";
+                }
+            }
+        }
+
+        function getBest(type,liniowy, ryczalt, skala) {
+            if(type == "L"){
+                return liniowy;
+            }
+            else if(type == "S"){
+                return skala;
+            }
+            else{
+                return ryczalt;
+            }
+        }
+
+        // Generate data points
+        function generateData() {
+            const data = [];
+            for (let income = 0; income <= 40000; income += 500) {
+                for (let cost = 0; cost <= 40000; cost += 500) {
+                    var liniowy = income - (liniowy_tax(income, cost) + cost);
+                    var ryczalt = income - (ryczalt_tax(income, 0.12) + cost);
+                    var skala = income - (skala_tax(income, cost) + cost);
+
+                    liniowy = liniowy > 0 ? liniowy : 0 ; 
+                    ryczalt = ryczalt > 0 ? ryczalt : 0 ;
+                    skala = skala > 0 ? skala : 0 ;
+                    console.log(liniowy, ryczalt, skala);
+                    if(liniowy * ryczalt * skala)
+                    {
+                        const bestMethod = compare_tax(liniowy, ryczalt, skala);
+                        data.push({
+                            income: income,
+                            costs: cost,
+                            bestOutcome: getBest(bestMethod, liniowy, ryczalt, skala),
+                            bestMethod: bestMethod,
+                            liniowy: liniowy,
+                            ryczalt: ryczalt,
+                            skala: skala
+                        });
+                    }
+                }
+            }
+            return data;
+        }
+
+        // Plot setup
+        const canvas = document.getElementById('taxPlot');
+        const ctx = canvas.getContext('2d');
+        const tooltip = document.getElementById('tooltip');
+        const data = generateData();
+
+        // Calculate scales
+        const padding = 50;
+        const maxIncome = Math.max(...data.map(d => d.income));
+        const maxCosts = Math.max(...data.map(d => d.costs));
+
+        function scaleX(x) {
+            return padding + (x / maxIncome) * (canvas.width - 2 * padding);
+        }
+
+        function scaleY(y) {
+            return canvas.height - (padding + (y / maxCosts) * (canvas.height - 2 * padding));
+        }
+
+        // Draw axes
+        ctx.beginPath();
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 1;
+        
+        // X axis
+        ctx.moveTo(padding, canvas.height - padding);
+        ctx.lineTo(canvas.width - padding, canvas.height - padding);
+        
+        // Y axis
+        ctx.moveTo(padding, padding);
+        ctx.lineTo(padding, canvas.height - padding);
+        ctx.stroke();
+
+        // X axis title
+        ctx.textAlign = 'center';
+        ctx.fillText('Przychód miesięczny (PLN)', canvas.width / 2, canvas.height - 10);
+        
+        // Y axis title
+        ctx.save();
+        ctx.translate(20, canvas.height / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText('Koszty miesięczne (PLN)', 0, 0);
+        ctx.restore();
+
+        // Draw grid
+        ctx.strokeStyle = '#ddd';
+        ctx.lineWidth = 0.5;
+        
+        // X grid
+        for (let i = 0; i <= 10; i++) {
+            const x = padding + (i / 10) * (canvas.width - 2 * padding);
+            ctx.beginPath();
+            ctx.moveTo(x, padding);
+            ctx.lineTo(x, canvas.height - padding);
+            ctx.stroke();
+            
+            // X axis labels
+            const label = Math.round(maxIncome * (i / 10));
+            ctx.fillText(label + ' PLN', x - 20, canvas.height - padding + 20);
+            
+        }
+        
+        // Y grid
+        for (let i = 0; i <= 10; i++) {
+            const y = padding + (i / 10) * (canvas.height - 2 * padding);
+            ctx.beginPath();
+            ctx.moveTo(padding, y);
+            ctx.lineTo(canvas.width - padding, y);
+            ctx.stroke();
+            
+            // Y axis labels
+            const label = Math.round(maxCosts * ((10 - i) / 10));
+            ctx.fillText(label + ' PLN', 5, y + 5);
+        }
+
+        // Plot points
+        data.forEach(point => {
+            ctx.beginPath();
+            const maxSize = 8; 
+            const size = (point.bestOutcome * maxSize)/point.income ;
+            ctx.arc(scaleX(point.income), scaleY(point.costs), size, 0, 2 * Math.PI);
+            
+            switch(point.bestMethod) {
+                case 'L':
+                    ctx.fillStyle = '#8884d8';
+                    break;
+                case 'R':
+                    ctx.fillStyle = '#82ca9d';
+                    break;
+                case 'S':
+                    ctx.fillStyle = '#ffc658';
+                    break;
+                default:
+                    ctx.fillStyle = '#000';
+            }
+            
+            ctx.fill();
+        });
+
+        // Tooltip handling
+        canvas.addEventListener('mousemove', function(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            // Find closest point
+            let closestPoint = null;
+            let minDistance = Infinity;
+            
+            data.forEach(point => {
+                const px = scaleX(point.income);
+                const py = scaleY(point.costs);
+                const distance = Math.sqrt((x - px) ** 2 + (y - py) ** 2);
+                
+                if (distance < minDistance && distance < 20) {
+                    minDistance = distance;
+                    closestPoint = point;
+                }
+            });
+            
+            if (closestPoint) {
+                tooltip.style.display = 'block';
+                tooltip.style.left = (event.clientX + 10) + 'px';
+                tooltip.style.top = (event.clientY + 10) + 'px';
+                tooltip.innerHTML = `
+                    <strong>Income:</strong> ${closestPoint.income.toFixed(2)} PLN<br>
+                    <strong>Costs:</strong> ${closestPoint.costs.toFixed(2)} PLN<br>
+                    <strong>Best Outcome:</strong> ${closestPoint.bestOutcome.toFixed(2)} PLN<br>
+                    <strong>Best Method:</strong> ${closestPoint.bestMethod}<br>
+                    <strong>Liniowy:</strong> ${closestPoint.liniowy.toFixed(2)} PLN<br>
+                    <strong>Ryczałt:</strong> ${closestPoint.ryczalt.toFixed(2)} PLN<br>
+                    <strong>Skala:</strong> ${closestPoint.skala.toFixed(2)} PLN
+                `;
+            } else {
+                tooltip.style.display = 'none';
+            }
+        });
+
+        canvas.addEventListener('mouseout', function() {
+            tooltip.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
