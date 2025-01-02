@@ -16,6 +16,12 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        .c
+        .controls {
+            margin-bottom: 20px;
+        }ontrols {
+            margin-bottom: 20px;
+        }
         .tooltip {
             position: absolute;
             background: white;
@@ -53,6 +59,24 @@
     <div class="container">
         <h1>Analizator podatkowy na rok 2025</h1>
         <canvas id="taxPlot" width="1000" height="700"></canvas>
+        <div class="controls">
+            <label for="incomeRange">Income Range (PLN):</label>
+            <input type="number" id="incomeMin" placeholder="Min Income" value="0">
+            <input type="number" id="incomeMax" placeholder="Max Income" value="40000">
+            <label for="costRange">Costs Range (PLN):</label>
+            <input type="number" id="costMin" placeholder="Min Costs" value="0">
+            <input type="number" id="costMax" placeholder="Max Costs" value="40000">
+            <label for="ryczaltTax">Wybierz stawkę ryczałtu:</label>
+            <select id="ryczaltTax">
+                <option value="12">12</option>
+                <option value="3">3</option>
+                <option value="8.5">8.5</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="17">17</option>
+            </select>
+            <button id="updatePlot" onclick="draw()">Update Plot</button>
+        </div>
         <div class="legend">
             <div class="legend-item">
                 <div class="legend-color" style="background: #8884d8;"></div>
@@ -154,10 +178,16 @@
         // Generate data points
         function generateData() {
             const data = [];
-            for (let income = 0; income <= 40000; income += 500) {
-                for (let cost = 0; cost <= 40000; cost += 500) {
+            const start_income = parseFloat(document.getElementById('incomeMin').value);
+            const max_income = parseFloat(document.getElementById('incomeMax').value);
+            const min_costs = parseFloat(document.getElementById('costMin').value);
+            const max_costs = parseFloat(document.getElementById('costMax').value);
+            for (let income = start_income; income <= max_income; income += 500) {
+                for (let cost = min_costs; cost <= max_costs; cost += 500) {
                     var liniowy = income - (liniowy_tax(income, cost) + cost);
-                    var ryczalt = income - (ryczalt_tax(income, 0.12) + cost);
+
+                    var ryczalt_tax_value = parseFloat(document.getElementById('ryczaltTax').value); // Fetching selected value
+                    var ryczalt = income - (ryczalt_tax(income, ryczalt_tax_value/100) + cost);
                     var skala = income - (skala_tax(income, cost) + cost);
 
                     liniowy = liniowy > 0 ? liniowy : 0 ; 
@@ -182,149 +212,163 @@
             return data;
         }
 
-        // Plot setup
-        const canvas = document.getElementById('taxPlot');
-        const ctx = canvas.getContext('2d');
-        const tooltip = document.getElementById('tooltip');
-        const data = generateData();
-        // Calculate scales
-        const padding = 50;
-        const maxIncome = Math.max(...data.map(d => d.income));
-        const maxCosts = Math.max(...data.map(d => d.costs));
-        
+        function draw()
+        {
+            
+            // Plot setup
+            const canvas = document.getElementById('taxPlot');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const tooltip = document.getElementById('tooltip');
+            const data = generateData();
+            // Calculate scales
+            const padding = 50;
 
-        function scaleX(x) {
-            return padding + (x / maxIncome) * (canvas.width - 2 * padding);
-        }
-
-        function scaleY(y) {
-            return canvas.height - (padding + (y / maxCosts) * (canvas.height - 2 * padding));
-        }
-
-        // Draw axes
-        ctx.beginPath();
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 1;
-        
-        // X axis
-        ctx.moveTo(padding, canvas.height - padding);
-        ctx.lineTo(canvas.width - padding, canvas.height - padding);
-        
-        // Y axis
-        ctx.moveTo(padding, padding);
-        ctx.lineTo(padding, canvas.height - padding);
-        ctx.stroke();
-
-        // X axis title
-        ctx.textAlign = 'center';
-        ctx.fillText('Przychód miesięczny (PLN)', canvas.width / 2, canvas.height - 10);
-        
-        // Y axis title
-        ctx.save();
-        ctx.rotate(-Math.PI / 2);
-        ctx.fillText('Koszty miesięczne (PLN)', -canvas.height/2, 30);
-        ctx.restore();
-
-        // Draw grid
-        ctx.strokeStyle = '#ddd';
-        ctx.lineWidth = 0.5;
-        
-        // X grid
-        for (let i = 0; i <= 10; i++) {
-            const x = padding + (i / 10) * (canvas.width - 2 * padding);
+            const minIncome = parseFloat(document.getElementById('incomeMin').value);
+            const minCosts = parseFloat(document.getElementById('costMin').value);
+            const maxIncome = Math.max(...data.map(d => d.income));
+            const maxCosts = Math.max(...data.map(d => d.costs));
+            
+    
+            function scaleX(x) {
+                return padding + ((x - minIncome) / (maxIncome - minIncome)) * (canvas.width - 2 * padding);
+            }
+    
+            function scaleY(y) {
+                return canvas.height - (padding + ((y - minCosts) / (maxCosts - minCosts)) * (canvas.height - 2 * padding));
+            }
+    
+            // Draw axes
             ctx.beginPath();
-            ctx.moveTo(x, padding);
-            ctx.lineTo(x, canvas.height - padding);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1;
+            
+            // X axis
+            ctx.moveTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            
+            // Y axis
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
             ctx.stroke();
+    
+            // X axis title
+            ctx.textAlign = 'center';
+            ctx.fillText('Przychód miesięczny (PLN)', canvas.width / 2, canvas.height - 10);
             
-            // X axis labels
-            const label = Math.round(maxIncome * (i / 10));
-            ctx.fillText(label + ' PLN', x, canvas.height - padding + 20);
-            
-        }
-        
-        // Y grid
-        for (let i = 0; i <= 5; i++) {
-            const y = padding + (i / 5) * (canvas.height - 2 * padding);
-            ctx.beginPath();
-            ctx.moveTo(padding, y);
-            ctx.lineTo(canvas.width - padding, y);
-            ctx.stroke();
-            
-            // Y axis labels
-            const label = Math.round(maxCosts * ((5 - i) / 5));
+            // Y axis title
             ctx.save();
             ctx.rotate(-Math.PI / 2);
-            ctx.fillText(label + ' PLN', -y + 10, 45);
+            ctx.fillText('Koszty miesięczne (PLN)', -canvas.height/2, 30);
             ctx.restore();
-        }
-
-        // Plot points
-        data.forEach(point => {
-            ctx.beginPath();
-            const maxSize = 8; 
-            const size = (point.bestOutcome * maxSize)/point.income ;
-            ctx.arc(scaleX(point.income), scaleY(point.costs), size, 0, 2 * Math.PI);
+    
+            // Draw grid
+            ctx.strokeStyle = '#ddd';
+            ctx.lineWidth = 0.5;
             
-            switch(point.bestMethod) {
-                case 'L':
-                    ctx.fillStyle = '#8884d8';
-                    break;
-                case 'R':
-                    ctx.fillStyle = '#82ca9d';
-                    break;
-                case 'S':
-                    ctx.fillStyle = '#ffc658';
-                    break;
-                default:
-                    ctx.fillStyle = '#000';
+            // X grid
+            for (let i = 0; i <= 10; i++) {
+                const x = padding + (i / 10) * (canvas.width - 2 * padding);
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, canvas.height - padding);
+                ctx.stroke();
+                
+                // X axis labels
+                const label = Math.round((maxIncome - minIncome) * (i / 10) + minIncome);
+                ctx.fillText(label + ' PLN', x, canvas.height - padding + 20);
+                
             }
             
-            ctx.fill();
-        });
-
-        // Tooltip handling
-        canvas.addEventListener('mousemove', function(event) {
-            const rect = canvas.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            
-            // Find closest point
-            let closestPoint = null;
-            let minDistance = Infinity;
-            
-            data.forEach(point => {
-                const px = scaleX(point.income);
-                const py = scaleY(point.costs);
-                const distance = Math.sqrt((x - px) ** 2 + (y - py) ** 2);
+            // Y grid
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (i / 5) * (canvas.height - 2 * padding);
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(canvas.width - padding, y);
+                ctx.stroke();
                 
-                if (distance < minDistance && distance < 20) {
-                    minDistance = distance;
-                    closestPoint = point;
+                // Y axis labels
+                const label = Math.round((maxCosts - minCosts) * ((5 - i) / 5) + minCosts);
+                ctx.save();
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillText(label + ' PLN', -y + 10, 45);
+                ctx.restore();
+            }
+    
+            // Plot points
+            data.forEach(point => {
+                ctx.beginPath();
+                const maxSize = 8; 
+                const size = (point.bestOutcome * maxSize)/point.income ;
+                ctx.arc(scaleX(point.income), scaleY(point.costs), size, 0, 2 * Math.PI);
+                
+                switch(point.bestMethod) {
+                    case 'L':
+                        ctx.fillStyle = '#8884d8';
+                        break;
+                    case 'R':
+                        ctx.fillStyle = '#82ca9d';
+                        break;
+                    case 'S':
+                        ctx.fillStyle = '#ffc658';
+                        break;
+                    default:
+                        ctx.fillStyle = '#000';
+                }
+                
+                ctx.fill();
+            });
+    
+            // Tooltip handling
+            canvas.addEventListener('mousemove', function(event) {
+                const rect = canvas.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                
+                // Find closest point
+                let closestPoint = null;
+                let minDistance = Infinity;
+                
+                data.forEach(point => {
+                    const px = scaleX(point.income);
+                    const py = scaleY(point.costs);
+                    const distance = Math.sqrt((x - px) ** 2 + (y - py) ** 2);
+                    
+                    if (distance < minDistance && distance < 20) {
+                        minDistance = distance;
+                        closestPoint = point;
+                    }
+                });
+                
+                if (closestPoint) {
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = (event.clientX + 10) + 'px';
+                    tooltip.style.top = (event.clientY + 10) + 'px';
+                    tooltip.innerHTML = `
+                        <strong>Income:</strong> ${closestPoint.income.toFixed(2)} PLN<br>
+                        <strong>Costs:</strong> ${closestPoint.costs.toFixed(2)} PLN<br>
+                        <strong>Best Outcome:</strong> ${closestPoint.bestOutcome.toFixed(2)} PLN<br>
+                        <strong>Best Method:</strong> ${closestPoint.bestMethod}<br>
+                        <strong>Liniowy:</strong> ${closestPoint.liniowy.toFixed(2)} PLN<br>
+                        <strong>Ryczałt:</strong> ${closestPoint.ryczalt.toFixed(2)} PLN<br>
+                        <strong>Skala:</strong> ${closestPoint.skala.toFixed(2)} PLN
+                    `;
+                } else {
+                    tooltip.style.display = 'none';
                 }
             });
-            
-            if (closestPoint) {
-                tooltip.style.display = 'block';
-                tooltip.style.left = (event.clientX + 10) + 'px';
-                tooltip.style.top = (event.clientY + 10) + 'px';
-                tooltip.innerHTML = `
-                    <strong>Income:</strong> ${closestPoint.income.toFixed(2)} PLN<br>
-                    <strong>Costs:</strong> ${closestPoint.costs.toFixed(2)} PLN<br>
-                    <strong>Best Outcome:</strong> ${closestPoint.bestOutcome.toFixed(2)} PLN<br>
-                    <strong>Best Method:</strong> ${closestPoint.bestMethod}<br>
-                    <strong>Liniowy:</strong> ${closestPoint.liniowy.toFixed(2)} PLN<br>
-                    <strong>Ryczałt:</strong> ${closestPoint.ryczalt.toFixed(2)} PLN<br>
-                    <strong>Skala:</strong> ${closestPoint.skala.toFixed(2)} PLN
-                `;
-            } else {
+    
+            canvas.addEventListener('mouseout', function() {
                 tooltip.style.display = 'none';
-            }
-        });
+            });
 
-        canvas.addEventListener('mouseout', function() {
-            tooltip.style.display = 'none';
-        });
+            ctx.fillStyle = '#000';
+        }
+
+        draw();
+
+        
     </script>
     <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
     <script>
