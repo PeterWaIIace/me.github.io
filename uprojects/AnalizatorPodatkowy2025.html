@@ -61,13 +61,13 @@
         <canvas id="taxPlot" width="1000" height="700"></canvas>
         <div class="controls">
             <label for="incomeRange">Income Range (PLN):</label>
-            <input type="number" id="incomeMin" placeholder="Min Income" value="0">
-            <input type="number" id="incomeMax" placeholder="Max Income" value="40000">
+            <input type="number" id="incomeMin" placeholder="Min Income" value="0" onchange="draw()">
+            <input type="number" id="incomeMax" placeholder="Max Income" value="40000" onchange="draw()">
             <label for="costRange">Costs Range (PLN):</label>
-            <input type="number" id="costMin" placeholder="Min Costs" value="0">
-            <input type="number" id="costMax" placeholder="Max Costs" value="40000">
+            <input type="number" id="costMin" placeholder="Min Costs" value="0" onchange="draw()">
+            <input type="number" id="costMax" placeholder="Max Costs" value="40000" onchange="draw()">
             <label for="ryczaltTax">Wybierz stawkę ryczałtu:</label>
-            <select id="ryczaltTax">
+            <select id="ryczaltTax" onchange="draw()">
                 <option value="12">12</option>
                 <option value="3">3</option>
                 <option value="8.5">8.5</option>
@@ -182,8 +182,8 @@
             const max_income = parseFloat(document.getElementById('incomeMax').value);
             const min_costs = parseFloat(document.getElementById('costMin').value);
             const max_costs = parseFloat(document.getElementById('costMax').value);
-            for (let income = start_income; income <= max_income; income += 500) {
-                for (let cost = min_costs; cost <= max_costs; cost += 500) {
+            for (let income = start_income; income <= max_income; income += (max_income-start_income)*0.01) {
+                for (let cost = min_costs; cost <= max_costs; cost += (max_costs-min_costs)*0.01) {
                     var liniowy = income - (liniowy_tax(income, cost) + cost);
 
                     var ryczalt_tax_value = parseFloat(document.getElementById('ryczaltTax').value); // Fetching selected value
@@ -368,7 +368,6 @@
 
         draw();
 
-        
     </script>
     <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
     <script>
