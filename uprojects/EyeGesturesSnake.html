@@ -222,8 +222,11 @@
             if (!gameOver) {
                 requestAnimationFrame(gameLoop);
             }
+            else{
+                init();
+                gameLoop();
+            }
         }
-        
 
         // Start game
         init();
