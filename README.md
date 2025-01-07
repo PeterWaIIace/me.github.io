@@ -16,7 +16,7 @@ Reach me via [Discord](https://discord.com/users/691353309868458056) or walas.pi
 
 ## Hire me!
 
-If your company needs computer engineer with experience in algorithms and signal processing or consulatancy on electronics/software issue reach out to me: walas.piotr@outlook.com.
+If your company needs a computer engineer with experience in algorithms and signal processing, or consultancy in electronics and software engineering, feel free to reach out to me: walas.piotr@outlook.com.
 
 ## Publications:
 
