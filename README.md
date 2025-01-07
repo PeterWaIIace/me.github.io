@@ -14,6 +14,10 @@ My [Resume](https://github.com/user-attachments/files/15597366/CV.pdf).
 
 Reach me via [Discord](https://discord.com/users/691353309868458056) or walas.piotr@outlook.com.
 
+## Hire me!
+
+If your company needs computer engineer with experience in algorithms and signal processing or consulatancy on electronics/software issue reach out to me: walas.piotr@outlook.com.
+
 ## Publications:
 
 [OCOsense - smart glasses for analyzing facial expression using optomyographic sensors - 2023](https://dl.acm.org/doi/abs/10.1145/3544549.3583918)
