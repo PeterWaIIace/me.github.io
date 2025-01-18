@@ -30,7 +30,7 @@ If your company needs a computer engineer with experience in algorithms and sign
 
 ### [WiP] [EyePilot](https://polar.sh/NativeSensors)
 
-EyePilot is personal use app based on opensource [Eyegestures](https://github.com/NativeSensors/EyeGestures) python library. It is designed to deliver gaze driven interface for all who cannot use or do not want to use hand based input devices.
+EyePilot is personal use app based on opensource [Eyegestures](https://github.com/NativeSensors/EyeGestures) python library or its JS port [EyeGesturesLite](https://github.com/NativeSensors/EyeGesturesLite). It is designed to deliver gaze driven interface for all who cannot use or do not want to use hand based input devices.
 
 <p align="center">
   <img src="https://github.com/PeterWaIIace/PeterWaIIace/assets/40773550/3b38d73d-bb6f-4f31-b67d-231ac4cd04cb" width="300" height="150">
