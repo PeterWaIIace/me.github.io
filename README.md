@@ -95,7 +95,7 @@ Play games with your faces expressions, using Emteq facial sensing glasses! Affe
 
 ### [JAX-NEAT](https://github.com/PeterWaIIace/NEAT/tree/main)
 
-This is implementation of Neural Evolution of Augmenting Topologies using JAX, based on paper of Kenneth O. Stanley and Risto Miikkulainen. I am huge fan of evolutionary techniques, so decided to design some tiny framework foR this.
+This is implementation of Neural Evolution of Augmenting Topologies using JAX, based on paper of Kenneth O. Stanley and Risto Miikkulainen. I am huge fan of evolutionary techniques, so decided to design some tiny framework for this.
 
 Repository may be a bit of mess, but all main code is in neat.py.
 
