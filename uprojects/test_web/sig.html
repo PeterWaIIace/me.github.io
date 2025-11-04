@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swarm Intelligence Group</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            background: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+        
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            background-color: transparent;
+            pointer-events: none
+        }
+        
+        .content {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .discord-btn {
+            display: inline-block;
+            background: #5865F2;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
+            margin-top: 20px;
+        }
+        
+        .discord-btn:hover {
+            background: #4752C4;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 101, 242, 0.6);
+        }
+        
+        .pixelated-text {
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            /* font-size: 48px; */
+            font-weight: normal;
+            color: #fe9900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            image-rendering: pixelated;
+            -webkit-font-smoothing: none;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+        }
+        
+        .section {
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            margin: 20px;
+            border-radius: 8px;
+        }
+        
+        .section h2 {
+            color: #fe9900;
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-align: center;
+        }
+        
+        .section p {
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+                
+        .members-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+        
+        .member-card {
+            background: white;
+            width: 200px;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            /* box-shadow: 0 2px 10px rgba(0,0,0,0.08); */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .member-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #595959;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+        
+        .member-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .member-role {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .social-feeds {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .feed {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            /* box-shadow: 0 2px 10px rgba(0,0,0,0.08); */
+        }
+        
+        .feed h3 {
+            color: #fe9900;
+            margin-bottom: 15px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feed-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feed-item:last-child {
+            border-bottom: none;
+        }
+        
+        .publications-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .publication-item {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #fe9900;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .publication-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .publication-meta {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-style: italic;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            /* box-shadow: 0 4px 20px rgba(0,0,0,0.1); */
+        }
+        
+        @media (max-width: 768px) {
+            .pixelated-text {
+                font-size: 24px;
+                letter-spacing: 1px;
+            }
+            
+            .section {
+                padding: 25px;
+                margin: 15px;
+            }
+            
+            .members-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .social-feeds {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+
+    <div class="content">
+        <div class="header">
+            <h1 class="pixelated-text">
+                <div>Swarm</div>
+                <div>Intelligence</div>
+                <div>Group</div>
+            </h1>
+            <p class="pixelated-text" style="font-size:12px; color: #8a8a8a;">Part of</p>
+            <p class="pixelated-text" style="font-size:12px; color: #8a8a8a;">Computer Science Institute</p>
+            <p class="pixelated-text" style="font-size:12px; color: #8a8a8a;">Warsaw University of Technology</p>
+            <a href="#" class="discord-btn">Discord</a>
+        </div>
+
+        <div class="section">
+            <h2 class="pixelated-text">Our work</h2>
+            <div class="empty-state">
+                <img src="boids.gif" alt="Member name" style="width: 300px;">
+                <img src="grab_n_release.gif" alt="Member name" style="width: 300px;">
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="pixelated-text">Publications</h2>
+            <div class="empty-state">
+                Publications will be listed here soon.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="pixelated-text">Social Feed</h2>
+            <div class="social-feeds">
+                <div class="feed">
+                    <h3>🐦 X (Twitter)</h3>
+                    <div class="feed-item">
+                        <p>Latest updates from our research group will appear here.</p>
+                    </div>
+                </div>
+                <div class="feed">
+                    <h3>🦋 Bluesky</h3>
+                    <div class="feed-item">
+                        <p>Connect with us on Bluesky for updates and discussions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="pixelated-text">Team</h2>
+
+            <div class="members-grid">
+                <div class="member-card">
+                    <div class="member-photo">👤</div>
+                    <div class="member-name">Prof. Jarosław Arabas</div>
+                    <div class="member-role">Lead</div>
+                </div>
+            </div>
+            <div class="members-grid">
+                <div class="member-card">
+                    <div class="member-photo">👤</div>
+                    <div class="member-name">Piotr Walas</div>
+                    <div class="member-role">Researcher</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-photo">👤</div>
+                    <div class="member-name">PhD Jakub Łyskawa</div>
+                    <div class="member-role">Researcher</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-photo">👤</div>
+                    <div class="member-name">PhD Łukasz Lepak</div>
+                    <div class="member-role">Researcher</div>
+                </div>
+            </div>
+            <div class="members-grid">
+                <div class="member-card">
+                    <div class="member-photo">👤</div>
+                    <div class="member-name">Michał Bloch</div>
+                    <div class="member-role">Student</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-photo">👤</div>
+                    <div class="member-name">Krzysztof </div>
+                    <div class="member-role">Student</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-photo">👤</div>
+                    <div class="member-name">Michał Bloch</div>
+                    <div class="member-role">Student</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-photo">👤</div>
+                    <div class="member-name">Krzysztof </div>
+                    <div class="member-role">Student</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-photo">👤</div>
+                    <div class="member-name">Michał Bloch</div>
+                    <div class="member-role">Student</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-photo">👤</div>
+                    <div class="member-name">Krzysztof </div>
+                    <div class="member-role">Student</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-photo">👤</div>
+                    <div class="member-name">Michał Bloch</div>
+                    <div class="member-role">Student</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-photo">👤</div>
+                    <div class="member-name">Krzysztof </div>
+                    <div class="member-role">Student</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        class Boid {
+            constructor() {
+                this.position = {
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height
+                };
+                this.velocity = {
+                    x: Math.random() * 4 - 2,
+                    y: Math.random() * 4 - 2
+                };
+                this.acceleration = { x: 0, y: 0 };
+                this.maxSpeed = 2.5;
+                this.maxForce = 0.05;
+                this.perceptionRadius = 50;
+            }
+
+            edges() {
+                if (this.position.x > canvas.width) this.position.x = 0;
+                else if (this.position.x < 0) this.position.x = canvas.width;
+                
+                if (this.position.y > canvas.height) this.position.y = 0;
+                else if (this.position.y < 0) this.position.y = canvas.height;
+            }
+
+            align(boids) {
+                let steering = { x: 0, y: 0 };
+                let total = 0;
+                
+                for (let other of boids) {
+                    let d = this.distance(this.position, other.position);
+                    if (other !== this && d < this.perceptionRadius) {
+                        steering.x += other.velocity.x;
+                        steering.y += other.velocity.y;
+                        total++;
+                    }
+                }
+                
+                if (total > 0) {
+                    steering.x /= total;
+                    steering.y /= total;
+                    steering = this.setMag(steering, this.maxSpeed);
+                    steering.x -= this.velocity.x;
+                    steering.y -= this.velocity.y;
+                    steering = this.limit(steering, this.maxForce);
+                }
+                
+                return steering;
+            }
+
+            separation(boids) {
+                let steering = { x: 0, y: 0 };
+                let total = 0;
+                
+                for (let other of boids) {
+                    let d = this.distance(this.position, other.position);
+                    if (other !== this && d < this.perceptionRadius) {
+                        let diff = {
+                            x: this.position.x - other.position.x,
+                            y: this.position.y - other.position.y
+                        };
+                        diff.x /= d * d;
+                        diff.y /= d * d;
+                        steering.x += diff.x;
+                        steering.y += diff.y;
+                        total++;
+                    }
+                }
+                
+                if (total > 0) {
+                    steering.x /= total;
+                    steering.y /= total;
+                    steering = this.setMag(steering, this.maxSpeed);
+                    steering.x -= this.velocity.x;
+                    steering.y -= this.velocity.y;
+                    steering = this.limit(steering, this.maxForce);
+                }
+                
+                return steering;
+            }
+
+            cohesion(boids) {
+                let steering = { x: 0, y: 0 };
+                let total = 0;
+                
+                for (let other of boids) {
+                    let d = this.distance(this.position, other.position);
+                    if (other !== this && d < this.perceptionRadius) {
+                        steering.x += other.position.x;
+                        steering.y += other.position.y;
+                        total++;
+                    }
+                }
+                
+                if (total > 0) {
+                    steering.x /= total;
+                    steering.y /= total;
+                    steering.x -= this.position.x;
+                    steering.y -= this.position.y;
+                    steering = this.setMag(steering, this.maxSpeed);
+                    steering.x -= this.velocity.x;
+                    steering.y -= this.velocity.y;
+                    steering = this.limit(steering, this.maxForce);
+                }
+                
+                return steering;
+            }
+
+            flock(boids) {
+                let alignment = this.align(boids);
+                let cohesion = this.cohesion(boids);
+                let separation = this.separation(boids);
+                let mouseAttraction = this.attractToMouse();
+
+                alignment.x *= 1;
+                alignment.y *= 1;
+                cohesion.x *= 1;
+                cohesion.y *= 1;
+                separation.x *= 1.5;
+                separation.y *= 1.5;
+                mouseAttraction.x *= 0.5;
+                mouseAttraction.y *= 0.5;
+
+                this.acceleration.x += alignment.x;
+                this.acceleration.y += alignment.y;
+                this.acceleration.x += cohesion.x;
+                this.acceleration.y += cohesion.y;
+                this.acceleration.x += separation.x;
+                this.acceleration.y += separation.y;
+                this.acceleration.x += mouseAttraction.x;
+                this.acceleration.y += mouseAttraction.y;
+            }
+
+            attractToMouse() {
+                let steering = { x: 0, y: 0 };
+                let mouseRadius = 500;
+                
+                let d = Math.sqrt((this.position.x - mouse.x) ** 2 + (this.position.y - mouse.y) ** 2);
+                
+                if (d < mouseRadius && d > 0) {
+                    steering.x = mouse.x - this.position.x;
+                    steering.y = mouse.y - this.position.y;
+                    
+                    steering = this.setMag(steering, this.maxSpeed);
+                    steering.x -= this.velocity.x;
+                    steering.y -= this.velocity.y;
+                    steering = this.limit(steering, this.maxForce * 2);
+                }
+                
+                return steering;
+            }
+
+            update() {
+                this.position.x += this.velocity.x;
+                this.position.y += this.velocity.y;
+                this.velocity.x += this.acceleration.x;
+                this.velocity.y += this.acceleration.y;
+                
+                let speed = Math.sqrt(this.velocity.x ** 2 + this.velocity.y ** 2);
+                if (speed > this.maxSpeed) {
+                    this.velocity.x = (this.velocity.x / speed) * this.maxSpeed;
+                    this.velocity.y = (this.velocity.y / speed) * this.maxSpeed;
+                }
+                
+                this.acceleration.x = 0;
+                this.acceleration.y = 0;
+            }
+
+            show() {
+                let angle = Math.atan2(this.velocity.y, this.velocity.x);
+                ctx.save();
+                ctx.translate(this.position.x, this.position.y);
+                ctx.rotate(angle);
+                
+                ctx.fillStyle = '#fe990000';
+                if(isOverDiscord)
+                {
+                    ctx.strokeStyle = '#ff0000'
+                }
+                else{
+                    ctx.strokeStyle = '#333'
+                }
+                ctx.lineWidth = 1;
+                
+                ctx.beginPath();
+                ctx.moveTo(8, 0);
+                ctx.lineTo(-4, 4);
+                ctx.lineTo(-2, 0);
+                ctx.lineTo(-4, -4);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.restore();
+            }
+
+            distance(a, b) {
+                return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+            }
+
+            setMag(vec, mag) {
+                let len = Math.sqrt(vec.x ** 2 + vec.y ** 2);
+                if (len > 0) {
+                    vec.x = (vec.x / len) * mag;
+                    vec.y = (vec.y / len) * mag;
+                }
+                return vec;
+            }
+
+            limit(vec, max) {
+                let len = Math.sqrt(vec.x ** 2 + vec.y ** 2);
+                if (len > max) {
+                    vec.x = (vec.x / len) * max;
+                    vec.y = (vec.y / len) * max;
+                }
+                return vec;
+            }
+        }
+
+        let boids = [];
+        for (let i = 0; i < 10; i++) {
+            boids.push(new Boid());
+        }
+
+        let mouse = { x: -1000, y: -1000 };
+        
+        document.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        
+        document.addEventListener('mouseleave', () => {
+            mouse.x = -1000;
+            mouse.y = -1000;
+        });
+
+        const discordBtn = document.querySelector('.discord-btn');
+        let isOverDiscord = false;
+
+        discordBtn.addEventListener('mouseenter', () => {
+            isOverDiscord = true;
+        });
+
+        discordBtn.addEventListener('mouseleave', () => {
+            isOverDiscord = false;
+        });
+
+        function animate() {
+            ctx.fillStyle = '#ffffff';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let boid of boids) {
+                boid.edges();
+                boid.flock(boids);
+                boid.update();
+                boid.show();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
