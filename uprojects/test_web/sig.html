@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swarm Intelligence Group</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>Swarm Intelligence Group - Warsaw University of Technology</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,217 +15,345 @@
         body {
             margin: 0;
             overflow-x: hidden;
-            background: #ffffff;
-            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #2d3748;
+            line-height: 1.6;
         }
         
         #canvas {
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 10;
+            z-index: 1;
             background-color: transparent;
-            pointer-events: none
+            pointer-events: none;
+            opacity: 0.4;
         }
         
         .content {
             position: relative;
             z-index: 2;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.85);
-            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
         
         .header {
             text-align: center;
-            margin-bottom: 60px;
+            padding: 80px 20px 60px;
+            background: rgba(255, 255, 255, 0.5);
+            margin-bottom: 40px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .header h1 {
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            font-size: 36px;
+            font-weight: normal;
+            color: #fe9900;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            line-height: 1.5;
+            image-rendering: pixelated;
+            -webkit-font-smoothing: none;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .subtitle {
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            font-size: 11px;
+            color: #718096;
+            margin-bottom: 25px;
+            font-weight: normal;
+            line-height: 1.8;
+            image-rendering: pixelated;
+            -webkit-font-smoothing: none;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .subtitle-line {
+            margin: 5px 0;
         }
 
         .discord-btn {
             display: inline-block;
             background: #5865F2;
             color: white;
-            padding: 15px 40px;
-            border-radius: 50px;
+            padding: 12px 32px;
+            border-radius: 6px;
             text-decoration: none;
-            font-weight: bold;
-            font-size: 18px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
-            margin-top: 20px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(88, 101, 242, 0.3);
         }
         
         .discord-btn:hover {
             background: #4752C4;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(88, 101, 242, 0.6);
-        }
-        
-        .pixelated-text {
-            font-family: 'Press Start 2P', 'Courier New', monospace;
-            /* font-size: 48px; */
-            font-weight: normal;
-            color: #fe9900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            image-rendering: pixelated;
-            -webkit-font-smoothing: none;
-            -moz-osx-font-smoothing: grayscale;
-            line-height: 1.6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(88, 101, 242, 0.4);
         }
         
         .section {
-            max-width: 1000px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            margin: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 50px 40px;
+            margin-bottom: 30px;
             border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
         
         .section h2 {
-            color: #fe9900;
-            margin-bottom: 20px;
+            color: #1a202c;
+            margin-bottom: 35px;
             font-size: 28px;
-            text-align: center;
+            font-weight: 700;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #fe9900;
+        }
+
+        .section-intro {
+            color: #4a5568;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 30px;
         }
         
-        .section p {
-            line-height: 1.8;
-            color: #333;
-            margin-bottom: 15px;
+        .work-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
         }
-                
-        .members-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 25px;
+
+        .work-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .work-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border-color: #fe9900;
+        }
+
+        .work-card img {
             width: 100%;
-            margin-bottom: 25px;
+            height: 250px;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .work-card-content {
+            padding: 20px;
+        }
+
+        .work-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .work-card p {
+            font-size: 14px;
+            color: #718096;
+            line-height: 1.6;
+        }
+
+        .members-container {
+            margin-top: 30px;
+        }
+
+        .member-group {
+            margin-bottom: 40px;
+        }
+
+        .member-group-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 4px solid #fe9900;
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
         }
         
         .member-card {
-            background: white;
-            width: 200px;
-            border-radius: 12px;
-            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 25px 20px;
             text-align: center;
-            /* box-shadow: 0 2px 10px rgba(0,0,0,0.08); */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        .member-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e0;
         }
         
         .member-photo {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            background: #595959;
-            margin: 0 auto 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0 auto 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 36px;
             color: white;
         }
         
         .member-name {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
+            font-size: 15px;
+            font-weight: 600;
+            color: #2d3748;
             margin-bottom: 5px;
+            line-height: 1.4;
         }
         
         .member-role {
             font-size: 13px;
-            color: #666;
+            color: #718096;
+            font-weight: 500;
         }
         
         .social-feeds {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 25px;
-            max-width: 1000px;
-            margin: 0 auto;
+            margin-top: 30px;
         }
         
         .feed {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            /* box-shadow: 0 2px 10px rgba(0,0,0,0.08); */
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .feed:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
         
         .feed h3 {
-            color: #fe9900;
-            margin-bottom: 15px;
-            font-size: 20px;
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f7fafc;
         }
         
         .feed-item {
             padding: 15px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .feed-item:last-child {
-            border-bottom: none;
-        }
-        
-        .publications-list {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .publication-item {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #fe9900;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        
-        .publication-title {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        
-        .publication-meta {
-            font-size: 14px;
-            color: #666;
+            color: #4a5568;
+            line-height: 1.7;
         }
         
         .empty-state {
             text-align: center;
-            padding: 40px;
-            color: #999;
+            padding: 60px 20px;
+            color: #a0aec0;
             font-style: italic;
-            background: rgba(255, 255, 255, 0.95);
+            background: #f7fafc;
             border-radius: 8px;
-            /* box-shadow: 0 4px 20px rgba(0,0,0,0.1); */
+            border: 1px dashed #cbd5e0;
+        }
+
+        .publication-list {
+            margin-top: 30px;
+        }
+
+        .publication-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #fe9900;
+            border-radius: 6px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .publication-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-left-width: 6px;
+        }
+
+        .publication-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .publication-authors {
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        .publication-meta {
+            font-size: 13px;
+            color: #718096;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #718096;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.95);
+            border-top: 1px solid #e2e8f0;
+            margin-top: 40px;
         }
         
         @media (max-width: 768px) {
-            .pixelated-text {
+            .header h1 {
                 font-size: 24px;
-                letter-spacing: 1px;
+            }
+
+            .subtitle {
+                font-size: 9px;
             }
             
             .section {
-                padding: 25px;
-                margin: 15px;
+                padding: 30px 20px;
+            }
+
+            .section h2 {
+                font-size: 24px;
+            }
+
+            .members-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             }
             
-            .members-grid {
+            .work-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .social-feeds {
                 grid-template-columns: 1fr;
             }
@@ -235,124 +363,128 @@
 <body>
     <canvas id="canvas"></canvas>
     
-
     <div class="content">
         <div class="header">
-            <h1 class="pixelated-text">
-                <div>Swarm</div>
-                <div>Intelligence</div>
-                <div>Group</div>
-            </h1>
-            <p class="pixelated-text" style="font-size:12px; color: #8a8a8a;">Part of</p>
-            <p class="pixelated-text" style="font-size:12px; color: #8a8a8a;">Computer Science Institute</p>
-            <p class="pixelated-text" style="font-size:12px; color: #8a8a8a;">Warsaw University of Technology</p>
-            <a href="#" class="discord-btn">Discord</a>
+            <h1>Swarm Intelligence<br>Research Group</h1>
+            <div class="subtitle">
+                <div class="subtitle-line">Institute of Computer Science</div>
+                <div class="subtitle-line">Warsaw University of Technology</div>
+            </div>
+            <a href="#" class="discord-btn">Join our Discord</a>
         </div>
 
         <div class="section">
-            <h2 class="pixelated-text">Our work</h2>
-            <div class="empty-state">
-                <img src="boids.gif" alt="Member name" style="width: 300px;">
-                <img src="grab_n_release.gif" alt="Member name" style="width: 300px;">
+            <h2>Research Overview</h2>
+            <p class="section-intro">
+                Our group focuses on collective behavior, emergent intelligence, and bio-inspired algorithms. 
+                We explore how to train agents to produce complex collaborative, cooperative, adaptive behaviors for 
+                optimization, robotics, and distributed systems.
+            </p>
+            <div class="work-grid">
+                <div class="work-card">
+                    <img src="boids.gif" alt="Boids flocking simulation">
+                    <div class="work-card-content">
+                        <h3>Swarm Algorithms</h3>
+                        <p>Studying collective motion and self-organization in multi-agent systems.</p>
+                    </div>
+                </div>
+                <div class="work-card">
+                    <img src="grab_n_release.gif" alt="Object manipulation simulation" style="object-position: center 80%; object-fit: cover;">
+                    <div class="work-card-content">
+                        <h3>Swarm Interactions</h3>
+                        <p>Coordinated manipulation and transportation in robotic swarms.</p>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="section">
-            <h2 class="pixelated-text">Publications</h2>
+            <h2>Publications</h2>
             <div class="empty-state">
-                Publications will be listed here soon.
+                Recent publications will be listed here soon.
             </div>
         </div>
 
         <div class="section">
-            <h2 class="pixelated-text">Social Feed</h2>
+            <h2>News & Updates</h2>
             <div class="social-feeds">
                 <div class="feed">
                     <h3>🐦 X (Twitter)</h3>
                     <div class="feed-item">
-                        <p>Latest updates from our research group will appear here.</p>
+                        <p>Follow us for the latest updates on our research, publications, and events.</p>
                     </div>
                 </div>
                 <div class="feed">
                     <h3>🦋 Bluesky</h3>
                     <div class="feed-item">
-                        <p>Connect with us on Bluesky for updates and discussions.</p>
+                        <p>Connect with us on Bluesky for research discussions and collaborations.</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="section">
-            <h2 class="pixelated-text">Team</h2>
+            <h2>Team</h2>
 
-            <div class="members-grid">
-                <div class="member-card">
-                    <div class="member-photo">👤</div>
-                    <div class="member-name">Prof. Jarosław Arabas</div>
-                    <div class="member-role">Lead</div>
+            <div class="members-container">
+                <div class="member-group">
+                    <div class="member-group-title">Principal Investigator</div>
+                    <div class="members-grid">
+                        <div class="member-card">
+                            <div class="member-photo">JA</div>
+                            <div class="member-name">Prof. Jarosław Arabas</div>
+                            <div class="member-role">Group Leader</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="members-grid">
-                <div class="member-card">
-                    <div class="member-photo">👤</div>
-                    <div class="member-name">Piotr Walas</div>
-                    <div class="member-role">Researcher</div>
+
+                <div class="member-group">
+                    <div class="member-group-title">Researchers</div>
+                    <div class="members-grid">
+                        <div class="member-card">
+                            <div class="member-photo">PW</div>
+                            <div class="member-name">Piotr Walas</div>
+                            <div class="member-role">Researcher</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-photo">JŁ</div>
+                            <div class="member-name">Jakub Łyskawa, PhD</div>
+                            <div class="member-role">Researcher</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-photo">ŁL</div>
+                            <div class="member-name">Łukasz Lepak, PhD</div>
+                            <div class="member-role">Researcher</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="member-card">
-                    <div class="member-photo">👤</div>
-                    <div class="member-name">PhD Jakub Łyskawa</div>
-                    <div class="member-role">Researcher</div>
-                </div>
-                <div class="member-card">
-                    <div class="member-photo">👤</div>
-                    <div class="member-name">PhD Łukasz Lepak</div>
-                    <div class="member-role">Researcher</div>
-                </div>
-            </div>
-            <div class="members-grid">
-                <div class="member-card">
-                    <div class="member-photo">👤</div>
-                    <div class="member-name">Michał Bloch</div>
-                    <div class="member-role">Student</div>
-                </div>
-                <div class="member-card">
-                    <div class="member-photo">👤</div>
-                    <div class="member-name">Krzysztof </div>
-                    <div class="member-role">Student</div>
-                </div>
-                <div class="member-card">
-                    <div class="member-photo">👤</div>
-                    <div class="member-name">Michał Bloch</div>
-                    <div class="member-role">Student</div>
-                </div>
-                <div class="member-card">
-                    <div class="member-photo">👤</div>
-                    <div class="member-name">Krzysztof </div>
-                    <div class="member-role">Student</div>
-                </div>
-                <div class="member-card">
-                    <div class="member-photo">👤</div>
-                    <div class="member-name">Michał Bloch</div>
-                    <div class="member-role">Student</div>
-                </div>
-                <div class="member-card">
-                    <div class="member-photo">👤</div>
-                    <div class="member-name">Krzysztof </div>
-                    <div class="member-role">Student</div>
-                </div>
-                <div class="member-card">
-                    <div class="member-photo">👤</div>
-                    <div class="member-name">Michał Bloch</div>
-                    <div class="member-role">Student</div>
-                </div>
-                <div class="member-card">
-                    <div class="member-photo">👤</div>
-                    <div class="member-name">Krzysztof </div>
-                    <div class="member-role">Student</div>
+
+                <div class="member-group">
+                    <div class="member-group-title">Students</div>
+                    <div class="members-grid">
+                        <div class="member-card">
+                            <div class="member-photo">MB</div>
+                            <div class="member-name">Michał Bloch</div>
+                            <div class="member-role">Student</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-photo">K</div>
+                            <div class="member-name">Krzysztof Wojnarowicz</div>
+                            <div class="member-role">Student</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-photo">K</div>
+                            <div class="member-name">Piotr Kitlowski</div>
+                            <div class="member-role">Student</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <footer>
+            <p>&copy; 2025 Swarm Intelligence Research Group | Warsaw University of Technology</p>
+        </footer>
     </div>
 
     <script>
@@ -378,8 +510,8 @@
                     y: Math.random() * 4 - 2
                 };
                 this.acceleration = { x: 0, y: 0 };
-                this.maxSpeed = 2.5;
-                this.maxForce = 0.05;
+                this.maxSpeed = 2;
+                this.maxForce = 0.04;
                 this.perceptionRadius = 50;
             }
 
@@ -486,8 +618,8 @@
                 cohesion.y *= 1;
                 separation.x *= 1.5;
                 separation.y *= 1.5;
-                mouseAttraction.x *= 0.5;
-                mouseAttraction.y *= 0.5;
+                mouseAttraction.x *= 0.3;
+                mouseAttraction.y *= 0.3;
 
                 this.acceleration.x += alignment.x;
                 this.acceleration.y += alignment.y;
@@ -501,7 +633,7 @@
 
             attractToMouse() {
                 let steering = { x: 0, y: 0 };
-                let mouseRadius = 500;
+                let mouseRadius = 1000;
                 
                 let d = Math.sqrt((this.position.x - mouse.x) ** 2 + (this.position.y - mouse.y) ** 2);
                 
@@ -512,7 +644,7 @@
                     steering = this.setMag(steering, this.maxSpeed);
                     steering.x -= this.velocity.x;
                     steering.y -= this.velocity.y;
-                    steering = this.limit(steering, this.maxForce * 2);
+                    steering = this.limit(steering, this.maxForce * 1.5);
                 }
                 
                 return steering;
@@ -540,15 +672,9 @@
                 ctx.translate(this.position.x, this.position.y);
                 ctx.rotate(angle);
                 
-                ctx.fillStyle = '#fe990000';
-                if(isOverDiscord)
-                {
-                    ctx.strokeStyle = '#ff0000'
-                }
-                else{
-                    ctx.strokeStyle = '#333'
-                }
-                ctx.lineWidth = 1;
+                ctx.fillStyle = 'transparent';
+                ctx.strokeStyle = isOverDiscord ? '#fe9900' : '#4a5568';
+                ctx.lineWidth = 1.5;
                 
                 ctx.beginPath();
                 ctx.moveTo(8, 0);
@@ -585,8 +711,9 @@
             }
         }
 
+        let boids_number = 50;
         let boids = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < boids_number; i++) {
             boids.push(new Boid());
         }
 
@@ -605,16 +732,17 @@
         const discordBtn = document.querySelector('.discord-btn');
         let isOverDiscord = false;
 
-        discordBtn.addEventListener('mouseenter', () => {
-            isOverDiscord = true;
-        });
+        if (discordBtn) {
+            discordBtn.addEventListener('mouseenter', () => {
+                isOverDiscord = true;
+            });
 
-        discordBtn.addEventListener('mouseleave', () => {
-            isOverDiscord = false;
-        });
+            discordBtn.addEventListener('mouseleave', () => {
+                isOverDiscord = false;
+            });
+        }
 
         function animate() {
-            ctx.fillStyle = '#ffffff';
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             for (let boid of boids) {
