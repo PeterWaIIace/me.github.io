@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swarm Intelligence Group - Warsaw University of Technology</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #0b0b0b;
+      color: #d4d4d4;
+      font-family: 'IBM Plex Mono', monospace;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    #canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      background-color: transparent;
+      pointer-events: none;
+      opacity: 0.3;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 80px 20px;
+    }
+
+    h1, h2, h3 {
+      color: #ffffff;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      color: #ffffff;
+    }
+
+    h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      color: #ffffff;
+    }
+
+    p {
+      color: #b0b0b0;
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .header {
+      margin-bottom: 3rem;
+    }
+
+    .subtitle {
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .discord-btn {
+      display: inline-block;
+      color: #fff;
+      border: 1px solid #333;
+      padding: 10px 22px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .discord-btn:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    /* Sections */
+    .section-intro {
+      color: #aaa;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Work Cards */
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 1.5rem;
+    }
+
+    .work-card {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .work-card:hover {
+      background: #151515;
+      border-color: #333;
+    }
+
+    .work-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      filter: brightness(0.85);
+    }
+
+    .work-card-content {
+      padding: 16px 18px;
+    }
+
+    .work-card h3 {
+      margin-bottom: 8px;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .work-card p {
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    /* Members */
+    .members-container {
+      margin-top: 1.5rem;
+    }
+
+    .member-group {
+      margin-bottom: 2rem;
+    }
+
+    .member-group-title {
+      font-weight: 600;
+      color: #fff;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .member-card {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 10px;
+      padding: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .member-card:hover {
+      border-color: #333;
+      background: #151515;
+    }
+
+    .member-photo {
+      width: 60px;
+      height: 60px;
+      background: #1c1c1c;
+      color: #999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-weight: 500;
+      margin: 0 auto 10px;
+      font-size: 0.9rem;
+    }
+
+    .member-name {
+      color: #fff;
+      font-size: 0.95rem;
+      margin-bottom: 5px;
+    }
+
+    .member-role {
+      color: #888;
+      font-size: 0.85rem;
+    }
+
+    /* Empty state */
+    .empty-state {
+      padding: 2rem;
+      color: #666;
+      border: 1px dashed #333;
+      border-radius: 8px;
+      text-align: center;
+      font-style: italic;
+      background: #0e0e0e;
+    }
+
+    /* Social Feeds */
+    .social-feeds {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 1.5rem;
+    }
+
+    .feed {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .feed h3 {
+      color: #fff;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    .feed-item {
+      color: #999;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    footer {
+      color: #666;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid #222;
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        padding: 60px 15px;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+      }
+
+      .members-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .work-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas"></canvas>
+
+  <div class="content">
+    <div class="header">
+      <h1>Swarm Intelligence Research Group</h1>
+      <div class="subtitle">
+        Institute of Computer Science<br>
+        Warsaw University of Technology
+      </div>
+      <a href="#" class="discord-btn">Join Discord</a>
+    </div>
+
+    <div class="section">
+      <h2>Research Overview</h2>
+      <p class="section-intro">
+        Our group focuses on collective behavior, emergent intelligence, and bio-inspired algorithms.
+        We explore how to train agents to produce complex collaborative, cooperative, and adaptive behaviors
+        for optimization, robotics, and distributed systems.
+      </p>
+      <div class="work-grid">
+        <div class="work-card">
+          <img src="boids.gif" alt="Boids flocking simulation">
+          <div class="work-card-content">
+            <h3>Swarm Algorithms</h3>
+            <p>Studying collective motion and self-organization in multi-agent systems.</p>
+          </div>
+        </div>
+        <div class="work-card">
+          <img src="grab_n_release.gif" alt="Object manipulation simulation">
+          <div class="work-card-content">
+            <h3>Swarm Interactions</h3>
+            <p>Coordinated manipulation and transportation in robotic swarms.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Publications</h2>
+      <div class="empty-state">
+        Recent publications will be listed here soon.
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>News & Updates</h2>
+      <div class="social-feeds">
+        <div class="feed">
+          <h3>🐦 X (Twitter)</h3>
+          <div class="feed-item">
+            Follow us for the latest updates on our research, publications, and events.
+          </div>
+        </div>
+        <div class="feed">
+          <h3>🦋 Bluesky</h3>
+          <div class="feed-item">
+            Connect with us on Bluesky for research discussions and collaborations.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Team</h2>
+      <div class="members-container">
+        <div class="member-group">
+          <div class="member-group-title">Principal Investigator</div>
+          <div class="members-grid">
+            <div class="member-card">
+              <div class="member-photo">JA</div>
+              <div class="member-name">Prof. Jarosław Arabas</div>
+              <div class="member-role">Group Leader</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="member-group">
+          <div class="member-group-title">Researchers</div>
+          <div class="members-grid">
+            <div class="member-card">
+              <div class="member-photo">PW</div>
+              <div class="member-name">Piotr Walas</div>
+              <div class="member-role">Researcher</div>
+            </div>
+            <div class="member-card">
+              <div class="member-photo">JŁ</div>
+              <div class="member-name">Jakub Łyskawa, PhD</div>
+              <div class="member-role">Researcher</div>
+            </div>
+            <div class="member-card">
+              <div class="member-photo">ŁL</div>
+              <div class="member-name">Łukasz Lepak, PhD</div>
+              <div class="member-role">Researcher</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="member-group">
+          <div class="member-group-title">Students</div>
+          <div class="members-grid">
+            <div class="member-card">
+              <div class="member-photo">MB</div>
+              <div class="member-name">Michał Bloch</div>
+              <div class="member-role">Student</div>
+            </div>
+            <div class="member-card">
+              <div class="member-photo">KW</div>
+              <div class="member-name">Krzysztof Wojnarowicz</div>
+              <div class="member-role">Student</div>
+            </div>
+            <div class="member-card">
+              <div class="member-photo">PK</div>
+              <div class="member-name">Piotr Kitlowski</div>
+              <div class="member-role">Student</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      &copy; 2025 Swarm Intelligence Research Group | Warsaw University of Technology
+    </footer>
+  </div>
+
+  <!-- Keep existing Boids script -->
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    class Boid {
+        constructor() {
+            this.position = {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height
+            };
+            this.velocity = {
+                x: Math.random() * 4 - 2,
+                y: Math.random() * 4 - 2
+            };
+            this.acceleration = { x: 0, y: 0 };
+            this.maxSpeed = 2;
+            this.maxForce = 0.04;
+            this.perceptionRadius = 50;
+        }
+
+        edges() {
+            if (this.position.x > canvas.width) this.position.x = 0;
+            else if (this.position.x < 0) this.position.x = canvas.width;
+            
+            if (this.position.y > canvas.height) this.position.y = 0;
+            else if (this.position.y < 0) this.position.y = canvas.height;
+        }
+
+        align(boids) {
+            let steering = { x: 0, y: 0 };
+            let total = 0;
+            
+            for (let other of boids) {
+                let d = this.distance(this.position, other.position);
+                if (other !== this && d < this.perceptionRadius) {
+                    steering.x += other.velocity.x;
+                    steering.y += other.velocity.y;
+                    total++;
+                }
+            }
+            
+            if (total > 0) {
+                steering.x /= total;
+                steering.y /= total;
+                steering = this.setMag(steering, this.maxSpeed);
+                steering.x -= this.velocity.x;
+                steering.y -= this.velocity.y;
+                steering = this.limit(steering, this.maxForce);
+            }
+            
+            return steering;
+        }
+
+        separation(boids) {
+            let steering = { x: 0, y: 0 };
+            let total = 0;
+            
+            for (let other of boids) {
+                let d = this.distance(this.position, other.position);
+                if (other !== this && d < this.perceptionRadius) {
+                    let diff = {
+                        x: this.position.x - other.position.x,
+                        y: this.position.y - other.position.y
+                    };
+                    diff.x /= d * d;
+                    diff.y /= d * d;
+                    steering.x += diff.x;
+                    steering.y += diff.y;
+                    total++;
+                }
+            }
+            
+            if (total > 0) {
+                steering.x /= total;
+                steering.y /= total;
+                steering = this.setMag(steering, this.maxSpeed);
+                steering.x -= this.velocity.x;
+                steering.y -= this.velocity.y;
+                steering = this.limit(steering, this.maxForce);
+            }
+            
+            return steering;
+        }
+
+        cohesion(boids) {
+            let steering = { x: 0, y: 0 };
+            let total = 0;
+            
+            for (let other of boids) {
+                let d = this.distance(this.position, other.position);
+                if (other !== this && d < this.perceptionRadius) {
+                    steering.x += other.position.x;
+                    steering.y += other.position.y;
+                    total++;
+                }
+            }
+            
+            if (total > 0) {
+                steering.x /= total;
+                steering.y /= total;
+                steering.x -= this.position.x;
+                steering.y -= this.position.y;
+                steering = this.setMag(steering, this.maxSpeed);
+                steering.x -= this.velocity.x;
+                steering.y -= this.velocity.y;
+                steering = this.limit(steering, this.maxForce);
+            }
+            
+            return steering;
+        }
+
+        flock(boids) {
+            let alignment = this.align(boids);
+            let cohesion = this.cohesion(boids);
+            let separation = this.separation(boids);
+            let mouseAttraction = this.attractToMouse();
+
+            alignment.x *= 1;
+            alignment.y *= 1;
+            cohesion.x *= 1;
+            cohesion.y *= 1;
+            separation.x *= 1.5;
+            separation.y *= 1.5;
+            mouseAttraction.x *= 0.3;
+            mouseAttraction.y *= 0.3;
+
+            this.acceleration.x += alignment.x;
+            this.acceleration.y += alignment.y;
+            this.acceleration.x += cohesion.x;
+            this.acceleration.y += cohesion.y;
+            this.acceleration.x += separation.x;
+            this.acceleration.y += separation.y;
+            this.acceleration.x += mouseAttraction.x;
+            this.acceleration.y += mouseAttraction.y;
+        }
+
+        attractToMouse() {
+            let steering = { x: 0, y: 0 };
+            let mouseRadius = 1000;
+            
+            let d = Math.sqrt((this.position.x - mouse.x) ** 2 + (this.position.y - mouse.y) ** 2);
+            
+            if (d < mouseRadius && d > 0) {
+                steering.x = mouse.x - this.position.x;
+                steering.y = mouse.y - this.position.y;
+                
+                steering = this.setMag(steering, this.maxSpeed);
+                steering.x -= this.velocity.x;
+                steering.y -= this.velocity.y;
+                steering = this.limit(steering, this.maxForce * 1.5);
+            }
+            
+            return steering;
+        }
+
+        update() {
+            this.position.x += this.velocity.x;
+            this.position.y += this.velocity.y;
+            this.velocity.x += this.acceleration.x;
+            this.velocity.y += this.acceleration.y;
+            
+            let speed = Math.sqrt(this.velocity.x ** 2 + this.velocity.y ** 2);
+            if (speed > this.maxSpeed) {
+                this.velocity.x = (this.velocity.x / speed) * this.maxSpeed;
+                this.velocity.y = (this.velocity.y / speed) * this.maxSpeed;
+            }
+            
+            this.acceleration.x = 0;
+            this.acceleration.y = 0;
+        }
+
+        show() {
+            let angle = Math.atan2(this.velocity.y, this.velocity.x);
+            ctx.save();
+            ctx.translate(this.position.x, this.position.y);
+            ctx.rotate(angle);
+            
+            ctx.fillStyle = 'transparent';
+            ctx.strokeStyle = isOverDiscord ? '#fe9900' : '#4a5568';
+            ctx.lineWidth = 1.5;
+            
+            ctx.beginPath();
+            ctx.moveTo(8, 0);
+            ctx.lineTo(-4, 4);
+            ctx.lineTo(-2, 0);
+            ctx.lineTo(-4, -4);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+
+        distance(a, b) {
+            return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+        }
+
+        setMag(vec, mag) {
+            let len = Math.sqrt(vec.x ** 2 + vec.y ** 2);
+            if (len > 0) {
+                vec.x = (vec.x / len) * mag;
+                vec.y = (vec.y / len) * mag;
+            }
+            return vec;
+        }
+
+        limit(vec, max) {
+            let len = Math.sqrt(vec.x ** 2 + vec.y ** 2);
+            if (len > max) {
+                vec.x = (vec.x / len) * max;
+                vec.y = (vec.y / len) * max;
+            }
+            return vec;
+        }
+    }
+
+    let boids_number = 50;
+    let boids = [];
+    for (let i = 0; i < boids_number; i++) {
+        boids.push(new Boid());
+    }
+
+    let mouse = { x: -1000, y: -1000 };
+    
+    document.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+    });
+    
+    document.addEventListener('mouseleave', () => {
+        mouse.x = -1000;
+        mouse.y = -1000;
+    });
+
+    const discordBtn = document.querySelector('.discord-btn');
+    let isOverDiscord = false;
+
+    if (discordBtn) {
+        discordBtn.addEventListener('mouseenter', () => {
+            isOverDiscord = true;
+        });
+
+        discordBtn.addEventListener('mouseleave', () => {
+            isOverDiscord = false;
+        });
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let boid of boids) {
+            boid.edges();
+            boid.flock(boids);
+            boid.update();
+            boid.show();
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
