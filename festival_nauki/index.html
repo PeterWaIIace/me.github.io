@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pl" data-theme-default="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Politechnika Warszawska · Nagrania</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="theme.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="wordmark">
+        <span class="wordmark-pl">Politechnika Warszawska</span>
+        <span class="wordmark-en">Warsaw University of Technology</span>
+      </div>
+      <div class="topbar-right">
+        <button class="theme-toggle" type="button" data-theme-toggle>Ciemny / Dark</button>
+        <span class="tagline">Wyobra&#378;nia &ge; wiedza</span>
+      </div>
+    </header>
+    <div class="palette-stripe" aria-hidden="true"></div>
+
+    <main class="shell">
+      <section class="showcase" aria-labelledby="showcase-title">
+        <div class="showcase-heading">
+          <div>
+            <span class="eyebrow"><span lang="pl">Nagrania</span><span class="recording-heading-en" lang="en"> / Recorded showcase</span></span>
+            <h2 id="showcase-title"><span lang="pl">Zachowania roju w ruchu</span><span class="recording-heading-en" lang="en">Swarm behaviours in motion</span></h2>
+          </div>
+          <p class="muted"><span lang="pl">Kliknij kafelek, aby otworzyć nagranie na pełnym ekranie w nowej karcie. Odtwarzanie i przewijanie pozostają pod Twoją kontrolą.</span><span class="recording-heading-en" lang="en">Select a tile to open its fullscreen recording in a new tab. Playback and seeking stay under your control here.</span></p>
+        </div>
+        <div class="showcase-grid" id="showcase-grid"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Politechnika Warszawska · nagrania demonstracji dronów</span>
+    </footer>
+
+    <script src="recordings.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

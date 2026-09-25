@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pl" data-theme-default="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Festiwal Nauki</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="theme.js"></script>
+  </head>
+  <body class="recording-page">
+    <header class="topbar">
+      <div class="wordmark">
+        <span class="wordmark-pl">Politechnika Warszawska</span>
+        <span class="wordmark-en">Warsaw University of Technology</span>
+      </div>
+      <div class="topbar-right">
+        <button class="theme-toggle" type="button" data-theme-toggle>Ciemny / Dark</button>
+      </div>
+    </header>
+    <div class="palette-stripe" aria-hidden="true"></div>
+
+    <header class="recording-header">
+      <a class="recording-back" href="index.html">
+        <span lang="pl">&larr; Wróć do nagrań</span>
+        <span class="recording-back-en" lang="en">&larr; Back to recordings</span>
+      </a>
+      <div class="recording-heading">
+        <div class="recording-heading-meta">
+          <span class="eyebrow" id="recording-label"></span>
+          <span class="eyebrow recording-heading-en" id="recording-label-en" lang="en"></span>
+        </div>
+        <h1 id="recording-title"></h1>
+        <p class="recording-title-en" id="recording-title-en" lang="en"></p>
+      </div>
+    </header>
+    <main class="recording-shell">
+      <div class="recording-layout">
+        <div class="recording-poster">
+          <section class="recording-stage" aria-label="Symulacja / Simulation">
+            <div class="recording-stage-label">
+              <span class="eyebrow" lang="pl">Symulacja</span>
+              <div class="recording-stage-actions">
+                <span class="recording-stage-note">
+                  <span lang="pl">Pełny ekran w sterowaniu wideo</span>
+                  <span class="recording-stage-note-en" lang="en">Full screen in video controls</span>
+                </span>
+                <button id="whiteboard-toggle" class="stage-toggle" type="button" aria-pressed="false">
+                  <span lang="pl">Tablica</span><span class="recording-heading-en" lang="en"> / Whiteboard</span>
+                </button>
+              </div>
+            </div>
+            <video id="recording-video" controls loop autoplay playsinline preload="metadata"></video>
+          </section>
+
+          <div class="recording-poster-grid">
+            <div class="recording-poster-visuals">
+              <figure class="recording-figure">
+                <div id="recording-diagram"></div>
+                <figcaption id="recording-diagram-caption"></figcaption>
+              </figure>
+              <div class="recording-facts" id="recording-facts" aria-label="Parametry / Parameters"></div>
+            </div>
+
+            <div class="recording-poster-text">
+              <section class="recording-description" aria-labelledby="recording-description-title">
+                <span class="eyebrow" lang="pl">Opis</span>
+                <h2 id="recording-description-title">
+                  <span lang="pl">Co widzimy</span>
+                  <span class="recording-heading-en" lang="en">What to watch for</span>
+                </h2>
+                <div class="recording-copy-block recording-copy-primary">
+                  <span class="recording-language">Po polsku <span class="recording-language-en" lang="en">/ Polish</span></span>
+                  <p id="recording-copy-pl" lang="pl"></p>
+                </div>
+                <div class="recording-copy-block recording-copy-translation">
+                  <span class="recording-language">English translation</span>
+                  <p id="recording-copy-en" lang="en"></p>
+                </div>
+                <div class="recording-copy-block recording-points-block">
+                  <span class="recording-language">W skrócie <span class="recording-language-en" lang="en">/ In short</span></span>
+                  <ul id="recording-points" class="recording-points"></ul>
+                </div>
+              </section>
+
+              <section class="recording-explanation" aria-labelledby="recording-explanation-title">
+                <div class="recording-explanation-head">
+                  <div>
+                    <span class="eyebrow"><span lang="pl">Mechanizm</span><span class="recording-heading-en" lang="en"> / Mechanism</span></span>
+                    <h2 id="recording-explanation-title"><span lang="pl">Od reguł do ruchu</span><span class="recording-heading-en" lang="en">From rules to motion</span></h2>
+                  </div>
+                  <p><span lang="pl">Trzy krótkie sekcje: co widzisz, jaka reguła działa i co oznaczają parametry.</span><span class="recording-heading-en" lang="en">Three short sections: what you see, which rule acts, and what the parameters mean.</span></p>
+                </div>
+                <div class="recording-sections" id="recording-sections"></div>
+              </section>
+            </div>
+          </div>
+        </div>
+
+        <aside class="recording-whiteboard" id="recording-whiteboard" hidden>
+          <iframe id="whiteboard-frame" title="tldraw whiteboard" src="about:blank" allow="clipboard-write"></iframe>
+        </aside>
+      </div>
+    </main>
+    <script src="recordings.js"></script>
+    <script src="recording.js"></script>
+  </body>
+</html>
