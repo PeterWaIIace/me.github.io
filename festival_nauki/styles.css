@@ -140,15 +140,16 @@ h3 {
 }
 
 .theme-toggle {
-  font: inherit;
-  font-size: 12px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
   cursor: pointer;
   color: var(--mint);
   background: transparent;
   border: 1px solid rgba(192, 209, 200, 0.35);
-  border-radius: 999px;
-  padding: 4px 12px;
-  white-space: nowrap;
+  border-radius: 50%;
 }
 
 .theme-toggle:hover {
